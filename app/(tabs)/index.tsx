@@ -1,70 +1,122 @@
-import { Image, StyleSheet, Platform } from 'react-native';
-
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { Text, StyleSheet, SafeAreaView, Alert, Image, TouchableOpacity, View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { HomeScreenNavigationProp } from '../navigation';
+import { Recipe } from '../types';
+import { useAppContext } from '@/components/AppContext';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { useState } from 'react';
 
 export default function HomeScreen() {
+  const navigation = useNavigation<HomeScreenNavigationProp>();
+  const { addRecipe } = useAppContext();  
+
+  const testRecipe: Recipe = {
+    id: '1',
+    title: 'Pancakes',
+    description: 'This is a detailed description of the recipe.',
+    image: 'https://images.pexels.com/photos/376464/pexels-photo-376464.jpeg',
+    steps: ['Step 1', 'Step 2', 'Step 3'],
+    ingredients: ['Ingredient 1', 'Ingredient 2', 'Ingredient 3'],
+    duration: '30',
+  };
+
+  const testRecipe2: Recipe = {
+    id: '2',
+    title: 'Steak',
+    description: 'This is a detailed description of the recipe.',
+    image: 'https://www.seriouseats.com/thmb/-KA2hwMofR2okTRndfsKtapFG4Q=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__serious_eats__seriouseats.com__recipes__images__2015__05__Anova-Steak-Guide-Sous-Vide-Photos15-beauty-159b7038c56a4e7685b57f478ca3e4c8.jpg',
+    steps: ['Step 1', 'Step 2', 'Step 3'],
+    ingredients: ['Ingredient 1', 'Ingredient 2', 'Ingredient 3'],
+    duration: '30',
+  };
+
+    // this will be populated with the result of an api call, so will need to move this to a useEffect
+    const [ recipe, setRecipe ] = useState<Recipe>(testRecipe)
+
+
+  const findNewRecipe = () => {
+    console.log('Finding a new recipe');
+    const random = Math.random();
+    if (random > 0.5) {
+      setRecipe(testRecipe);
+    } else {
+      setRecipe(testRecipe2);
+    }
+  };
+
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
+    <SafeAreaView style={styles.container}>
+      <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('RecipeInfoScreen', { recipe: recipe })}>
+        <Text style={styles.title}>{recipe.title}</Text>
         <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
+          style={styles.image}
+          source={{ uri: recipe.image }}
         />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+        <View style={styles.durationContainer}>
+          <Icon name="time-outline" size={20} color="#000" />
+          <Text> {recipe.duration} minutes</Text>
+        </View>
+        <TouchableOpacity style={styles.saveForLaterButton} onPress={() => addRecipe(recipe)}>
+          <Text style={styles.text}>Save for Later</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.findRecipeButton} onPress={() => findNewRecipe()}>
+          <Text style={styles.text}>Find a New Recipe</Text>
+        </TouchableOpacity>
+      </TouchableOpacity>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  card: {
+    padding: 20,
+    borderRadius: 10,
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 5,
+    height: '90%',
+    width: '90%',
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  image: {
+    width: '100%',
+    height: '70%',
+    borderRadius: 10,
+    marginVertical: 10,
+  },
+  saveForLaterButton: {
+    marginTop: 10,
+    padding: 10,
+    backgroundColor: '#f0ad4e',
+    borderRadius: 5,
+    width: '100%',
+  },
+  findRecipeButton: {
+    marginTop: 10,
+    padding: 10,
+    backgroundColor: '#5bc0de',
+    borderRadius: 5,
+    width: '100%',
+  },
+  text: {
+    color: '#fff',
+    textAlign: 'center',
+  },
+  durationContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
     marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
   },
 });
