@@ -1,50 +1,71 @@
-import { Text, StyleSheet, SafeAreaView, Alert, Image, TouchableOpacity, View } from 'react-native';
+import { Text, StyleSheet, SafeAreaView, Image, TouchableOpacity, View, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { HomeScreenNavigationProp } from '../navigation';
 import { Recipe } from '../types';
 import { useAppContext } from '@/components/AppContext';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import RecipeApi from '@/components/RecipeApi';
 
 export default function HomeScreen() {
   const navigation = useNavigation<HomeScreenNavigationProp>();
   const { addRecipe } = useAppContext();  
-
-  const testRecipe: Recipe = {
-    id: '1',
-    title: 'Pancakes',
-    description: 'This is a detailed description of the recipe.',
-    image: 'https://images.pexels.com/photos/376464/pexels-photo-376464.jpeg',
-    steps: ['Step 1', 'Step 2', 'Step 3'],
-    ingredients: ['Ingredient 1', 'Ingredient 2', 'Ingredient 3'],
-    duration: '30',
-  };
-
-  const testRecipe2: Recipe = {
-    id: '2',
-    title: 'Steak',
-    description: 'This is a detailed description of the recipe.',
-    image: 'https://www.seriouseats.com/thmb/-KA2hwMofR2okTRndfsKtapFG4Q=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__serious_eats__seriouseats.com__recipes__images__2015__05__Anova-Steak-Guide-Sous-Vide-Photos15-beauty-159b7038c56a4e7685b57f478ca3e4c8.jpg',
-    steps: ['Step 1', 'Step 2', 'Step 3'],
-    ingredients: ['Ingredient 1', 'Ingredient 2', 'Ingredient 3'],
-    duration: '30',
-  };
-
-    // this will be populated with the result of an api call, so will need to move this to a useEffect
-    const [ recipe, setRecipe ] = useState<Recipe>(testRecipe)
-
-
-  const findNewRecipe = () => {
-    console.log('Finding a new recipe');
-    const random = Math.random();
-    if (random > 0.5) {
-      setRecipe(testRecipe);
-    } else {
-      setRecipe(testRecipe2);
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [selectedRecipeIndex, setSelectedRecipeIndex] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(0);
+  const recipeApi = new RecipeApi();
+  const fetchRecipes = async () => {
+    setLoading(true);
+    try {
+      console.log('Fetching recipes home screen');
+      // todo: enable users to set these filters
+      const recipes = await recipeApi.searchRecipes({
+        query: '',
+        addRecipeNutrition: true,
+        addRecipeInstructions: true,
+        fillIngredients: true,
+        maxReadyTime: 20,
+        number: 2,
+        offset: page,
+        instructionsRequired: true,
+        sort: 'popularity'
+      });
+      setPage((prevPage) => {
+        return prevPage + 1;
+      });
+      setRecipes(recipes);
+    } catch (error) {
+      console.error('Error fetching recipes:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
+  const findNewRecipe = () => {
+    setSelectedRecipeIndex((prevIndex) => {
+      const nextIndex = prevIndex + 1;
+      if (nextIndex >= recipes.length) {
+        fetchRecipes();
+        return 0;
+      } else {
+        return nextIndex;
+      }
+    });
+  };
 
+  useEffect(() => {
+    fetchRecipes();
+  }, []);
+
+  const recipe = recipes[selectedRecipeIndex];
+  if (loading || !recipe) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </SafeAreaView>
+    );
+  }
   return (
     <SafeAreaView style={styles.container}>
       <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('RecipeInfoScreen', { recipe: recipe })}>
@@ -55,7 +76,11 @@ export default function HomeScreen() {
         />
         <View style={styles.durationContainer}>
           <Icon name="time-outline" size={20} color="#000" />
-          <Text> {recipe.duration} minutes</Text>
+          <Text> {recipe.readyInMinutes} minutes</Text>
+        </View>
+        <View style={styles.durationContainer}>
+          <Icon name="flash" size={20} color="#000" />
+          <Text> {Math.floor(recipe.nutrition.nutrients[0].amount)} calories</Text>
         </View>
         <TouchableOpacity style={styles.saveForLaterButton} onPress={() => addRecipe(recipe)}>
           <Text style={styles.text}>Save for Later</Text>

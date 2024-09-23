@@ -12,5 +12,5 @@ export interface Recipe {
   image: string;
   steps: string[];
   ingredients: string[];
-  duration: string;
+  readyInMinutes: string;
 }

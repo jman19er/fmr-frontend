@@ -13,7 +13,7 @@ const RecipeInfoScreen = () => {
     const { recipe } = route.params;
 
     const { addRecipe } = useAppContext();  
-    const [checkedSteps, setCheckedSteps] = useState<boolean[]>(new Array(recipe.steps.length).fill(false));
+    const [checkedSteps, setCheckedSteps] = useState<boolean[]>(new Array(recipe.analyzedInstructions[0].steps.length).fill(false));
 
     const toggleCheckbox = (index: number) => {
         const newCheckedSteps = [...checkedSteps];
@@ -30,25 +30,25 @@ const RecipeInfoScreen = () => {
                 <Text style={styles.title}>{recipe.title}</Text>
                 <View style={styles.durationContainer}>
                     <Icon name="time-outline" size={20} color="#000" />
-                    <Text> {recipe.duration} minutes</Text>
+                    <Text> {recipe.readyInMinutes} minutes</Text>
                 </View>
                 <Text style={styles.description}>{recipe.description}</Text>
                 <Image source={{ uri: recipe.image }} style={styles.image} />
                 <Text style={styles.heading}>Steps</Text>
-                {recipe.steps.map((step: string, index: number) => (
+                {recipe.analyzedInstructions[0].steps.map((step: string, index: number) => (
                     <View key={index} style={styles.stepContainer}>
                         <CheckBox
                             value={checkedSteps[index]}
                             onValueChange={() => toggleCheckbox(index)}
                         />
                         <Text style={[styles.step, checkedSteps[index] && styles.checkedStep]}>
-                            {index + 1}. {step}
+                            {index + 1}. {step.step}
                         </Text>
                     </View>
                 ))}
                 <Text style={styles.heading}>Ingredients</Text>
-                {recipe.ingredients.map((ingredient: string, index: number) => (
-                    <Text key={index} style={styles.ingredient}>{ingredient}</Text>
+                {recipe.nutrition.ingredients.map((ingredient: string, index: number) => (
+                    <Text key={index} style={styles.ingredient}>{ingredient.name} {ingredient.amount} {ingredient.unit}</Text>
                 ))}
                 <TouchableOpacity style={styles.saveForLaterButton} onPress={() => addRecipe(recipe)}>
                     <Text style={styles.text}>Save for Later</Text>
