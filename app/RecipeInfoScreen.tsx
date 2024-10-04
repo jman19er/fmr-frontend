@@ -4,28 +4,30 @@ import CheckBox from '@react-native-community/checkbox';
 import { useRoute } from '@react-navigation/native';
 import { RecipeInfoScreenRouteProp } from './navigation';
 import { useAppContext } from '@/components/AppContext';
-import { useRouter } from 'expo-router';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const RecipeInfoScreen = () => {
     const route = useRoute<RecipeInfoScreenRouteProp>();
-    const router = useRouter();
     const { recipe } = route.params;
 
-    const { addRecipe } = useAppContext();  
+    const { addRecipe } = useAppContext();
     const [checkedSteps, setCheckedSteps] = useState<boolean[]>(new Array(recipe.analyzedInstructions[0].steps.length).fill(false));
+    const [checkedIngredients, setCheckedIngredients] = useState<boolean[]>(new Array(recipe.extendedIngredients.length).fill(false));
 
-    const toggleCheckbox = (index: number) => {
-        const newCheckedSteps = [...checkedSteps];
-        newCheckedSteps[index] = !newCheckedSteps[index];
-        setCheckedSteps(newCheckedSteps);
+    const toggleCheckbox = (steps: boolean, index: number) => {
+        if (steps) {
+            const newCheckedSteps = [...checkedSteps];
+            newCheckedSteps[index] = !newCheckedSteps[index];
+            setCheckedSteps(newCheckedSteps);
+        } else {
+            const newCheckedIngredients = [...checkedIngredients];
+            newCheckedIngredients[index] = !newCheckedIngredients[index];
+            setCheckedIngredients(newCheckedIngredients);
+        }
     };
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity style={styles.buttonContainer} onPress={() => router.back()}>
-                <Icon name="arrow-back" size={24} color="#000" />
-            </TouchableOpacity>
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
                 <Text style={styles.title}>{recipe.title}</Text>
                 <View style={styles.durationContainer}>
@@ -34,22 +36,35 @@ const RecipeInfoScreen = () => {
                 </View>
                 <Text style={styles.description}>{recipe.description}</Text>
                 <Image source={{ uri: recipe.image }} style={styles.image} />
-                <Text style={styles.heading}>Steps</Text>
-                {recipe.analyzedInstructions[0].steps.map((step: string, index: number) => (
-                    <View key={index} style={styles.stepContainer}>
-                        <CheckBox
-                            value={checkedSteps[index]}
-                            onValueChange={() => toggleCheckbox(index)}
-                        />
-                        <Text style={[styles.step, checkedSteps[index] && styles.checkedStep]}>
-                            {index + 1}. {step.step}
-                        </Text>
-                    </View>
-                ))}
-                <Text style={styles.heading}>Ingredients</Text>
-                {recipe.nutrition.ingredients.map((ingredient: string, index: number) => (
-                    <Text key={index} style={styles.ingredient}>{ingredient.name} {ingredient.amount} {ingredient.unit}</Text>
-                ))}
+                <View style={styles.ingredientsContainer}>
+                    <Text style={styles.heading}>Ingredients</Text>
+                    {recipe.extendedIngredients.map((ingredient: string, index: number) => (
+                        <View key={index} style={styles.ingredientContainer}>
+                            <CheckBox
+                                value={checkedIngredients[index]}
+                                onValueChange={() => toggleCheckbox(false, index)}
+                            />
+                            <Text key={index} style={[styles.ingredient, checkedIngredients[index] && styles.checkedStep]}>
+                                [ {ingredient.amount.toFixed(2)} {ingredient.unit}] {ingredient.originalName}
+                            </Text>
+
+                        </View>
+                    ))}
+                </View>
+                <View style={styles.stepsContainer}>
+                    <Text style={styles.heading}>Steps</Text>
+                    {recipe.analyzedInstructions[0].steps.map((step: string, index: number) => (
+                        <View key={index} style={styles.stepContainer}>
+                            <CheckBox
+                                value={checkedSteps[index]}
+                                onValueChange={() => toggleCheckbox(true, index)}
+                            />
+                            <Text style={[styles.step, checkedSteps[index] && styles.checkedStep]}>
+                                {step.step}
+                            </Text>
+                        </View>
+                    ))}
+                </View>
                 <TouchableOpacity style={styles.saveForLaterButton} onPress={() => addRecipe(recipe)}>
                     <Text style={styles.text}>Save for Later</Text>
                 </TouchableOpacity>
@@ -104,23 +119,40 @@ const styles = StyleSheet.create({
         marginBottom: 8,
         textAlign: 'center', // Center text
     },
-    stepContainer: {
+    stepsContainer: {
+        marginTop: 16,
+        padding: 10,
+    },
+    ingredientsContainer: {
+        marginTop: 16,
+        padding: 10,
+    },
+    ingredientContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         marginBottom: 4,
-    },
-    step: {
-        fontSize: 16,
-        marginLeft: 8,
-    },
-    checkedStep: {
-        textDecorationLine: 'line-through',
-        color: 'gray',
+        width: '100%',
     },
     ingredient: {
         fontSize: 16,
         marginBottom: 4,
-        textAlign: 'center', // Center text
+        padding: 10,
+    },
+    stepContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 4,
+        width: '100%',
+    },
+    step: {
+        marginLeft: 10,
+        fontSize: 16,
+        flex:1,
+        flexWrap: 'wrap', // Ensure text wraps within the container
+    },
+    checkedStep: {
+        textDecorationLine: 'line-through',
+        color: 'gray',
     },
     saveForLaterButton: {
         marginTop: 10,

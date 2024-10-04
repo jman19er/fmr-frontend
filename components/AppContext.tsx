@@ -39,14 +39,14 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
   // Function to add a new recipe
   const addRecipe = (newRecipe: Recipe) => {
-    const updatedRecipes = [...savedRecipes, newRecipe];
+    const updatedRecipes = [...savedRecipes.filter(recipe => recipe.id != newRecipe.id), newRecipe];
     setSavedRecipes(updatedRecipes);
     saveRecipesToStorage(updatedRecipes);
   };
 
   // Function to delete a recipe
   const deleteRecipe = (id: string) => {
-    const updatedRecipes = savedRecipes.filter(recipe => recipe.id !== id);
+    const updatedRecipes = savedRecipes.filter(recipe => recipe.id != id);
     setSavedRecipes(updatedRecipes);
     saveRecipesToStorage(updatedRecipes);
   };

@@ -1,16 +1,30 @@
 import React from 'react';
-import { View, Text, FlatList, Button, StyleSheet } from 'react-native';
+import { View, Text, FlatList, Button, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { useAppContext } from '@/components/AppContext';
 import { Recipe } from '../types';
+import { SavedScreenNavigationProp } from '../navigation';
+import { useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const SavedScreen = () => {
   const { savedRecipes, deleteRecipe } = useAppContext();
+  const navigation = useNavigation<SavedScreenNavigationProp>();
+
+  const renderRightActions = (itemId: string) => (
+    <TouchableOpacity style={styles.deleteButton} onPress={() => deleteRecipe(itemId)}>
+      <Icon name="trash-outline" size={30} color="#fff" />
+    </TouchableOpacity>
+  );
 
   const renderItem = ({ item }: { item: Recipe }) => (
-    <View style={styles.recipeItem}>
-      <Text style={styles.recipeTitle}>{item.title}</Text>
-      <Button title="Delete" onPress={() => deleteRecipe(item.id)} />
-    </View>
+    <Swipeable renderRightActions={() => renderRightActions(item.id)}>
+      <TouchableOpacity style={styles.recipeItem} onPress={() => navigation.navigate('RecipeInfoScreen', { recipe: item })}>
+        <Image source={{ uri: item.image }} style={styles.savedRecipeThumbnail} />
+        <Text style={styles.recipeTitle}>{item.title}</Text>
+      </TouchableOpacity>
+    </Swipeable>
+
   );
 
 
@@ -47,6 +61,18 @@ const styles = StyleSheet.create({
   recipeTitle: {
     fontSize: 18,
   },
+  savedRecipeThumbnail: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
+  deleteButton: {
+    backgroundColor: 'red',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 70,
+    height: '100%',
+  }
 });
 
 export default SavedScreen;

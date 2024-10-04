@@ -6,11 +6,45 @@ export type RootStackParamList = {
 
   
 export interface Recipe {
-  id: string;
+  id: number;
   title: string;
-  description: string;
   image: string;
-  steps: string[];
-  ingredients: string[];
-  readyInMinutes: string;
+  readyInMinutes: number;
+  analyzedInstructions: {
+    steps: {
+      step: string;
+    }[];
+  }[];
+  nutrition: {
+    nutrients: {
+      title: string;
+      amount: number;
+    }[];
+    ingredients: {
+      name: string;
+      amount: number;
+      unit: string;
+    }[];
+  };
 }
+
+export interface FilterPopoverProps {
+  visible: boolean;
+  onClose: () => void;
+  onApply: (data: any) => void;
+};
+
+export interface Filters {
+    query?: string;
+    maxReadyTime?: number;
+    includeIngredients?: string;
+    excludeIngredients?: string;
+    minProtein?: number;
+    maxProtein?: number;
+    minCarbs?: number;
+    maxCarbs?: number;
+    minFat?: number;
+    maxFat?: number;
+    minCalories?: number;
+    maxCalories?: number;
+};

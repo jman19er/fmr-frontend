@@ -1,13 +1,48 @@
 import { Stack } from 'expo-router';
 import { AppProvider } from '@/components/AppContext';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import FilterPopover from '@/components/FilterPopover';
+import React, { useState } from 'react';
+import { Filters } from './types';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 export default function Layout() {
+  const [filterVisible, setFilterVisible] = useState(false);
+  const [filters, setFilters] = useState({});
+  const navigation = useNavigation();
+
+  const handleApplyFilters = (newFilters: Filters) => {
+    setFilters(newFilters);
+    setFilterVisible(false);
+    navigation.setParams({ filters: newFilters }); // Update the filters dynamically
+  };
   return (
-    <AppProvider>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="RecipeInfoScreen" options={{ headerShown: false }} />
-      </Stack>
-    </AppProvider>
+    <GestureHandlerRootView>
+      <AppProvider>
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{
+            headerTitle: 'Find My Recipe', // Hide the title next to the back arrow
+            headerRight: () => (
+              <TouchableOpacity onPress={() => setFilterVisible(true)}>
+                <Icon name="filter-outline" size={24} color="#000" />
+              </TouchableOpacity>
+            ),
+            }}
+            initialParams={{ filters }}
+          />
+          <Stack.Screen name="RecipeInfoScreen" options={{
+            headerTitle: 'Find My Recipe',
+            headerBackTitleVisible: false, // Hide the title next to the back arrow
+          }} />
+        </Stack>
+        <FilterPopover
+          visible={filterVisible}
+          onClose={() => setFilterVisible(false)}
+          onApply={handleApplyFilters}
+        />
+      </AppProvider>
+    </GestureHandlerRootView>
   );
 }

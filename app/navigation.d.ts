@@ -25,3 +25,8 @@ export type HomeScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
   'HomeScreen'
 >;
+
+export type SavedScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'SavedScreen'
+>;
