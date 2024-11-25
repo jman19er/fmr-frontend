@@ -1,19 +1,16 @@
 import 'react-native-gesture-handler';
-import { Text, StyleSheet, SafeAreaView, Image, TouchableOpacity, View, ActivityIndicator, ScrollView } from 'react-native';
+import { Text, StyleSheet, SafeAreaView, Image, TouchableOpacity, View, ActivityIndicator } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import { Filters, Recipe } from '../types';
-import { useAppContext } from '@/components/AppContext';
 import { useEffect, useState } from 'react';
 import RecipeApi from '@/components/RecipeApi';
-import RecipeOverview from '@/components/RecipeOverview';
+import { RecipeInfo } from '@/components/RecipeInfo';
 
 export default function HomeScreen() {
-  const { addRecipe, deleteRecipe } = useAppContext();
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [selectedRecipeIndex, setSelectedRecipeIndex] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number>(0);
-  const [isSaved, setIsSaved] = useState<boolean>(false);
 
   const recipeApi = new RecipeApi();
   const route = useRoute();
@@ -47,15 +44,6 @@ export default function HomeScreen() {
     }
   };
 
-  const handleToggleRecipe = (recipe: Recipe) => {
-      if (isSaved) {
-          deleteRecipe(recipe.id);
-      } else {
-          addRecipe(recipe);
-      }
-      setIsSaved(!isSaved);
-    };
-
   const findNewRecipe = () => {
     setSelectedRecipeIndex((prevIndex) => {
       const nextIndex = prevIndex + 1;
@@ -66,7 +54,6 @@ export default function HomeScreen() {
         return nextIndex;
       }
     });
-    setIsSaved(false);
   };
 
   useEffect(() => {
@@ -96,20 +83,12 @@ export default function HomeScreen() {
   return (
 
     <SafeAreaView style={styles.container}>
-      <ScrollView>
-      <RecipeOverview recipe={recipe} />
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.saveForLater} onPress={() => handleToggleRecipe(recipe)}>
-          {/* <Icon name="bookmark-outline" size={30} color="#fff" /> */}
-          <Text>{ isSaved ? "Remove from Saved" : "Save for Later"}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.findNewRecipe} onPress={() => findNewRecipe()}>
-          {/* <Icon name="refresh-outline" size={30} color="#fff" /> */}
-          <Text>Find New Recipe</Text>
-        </TouchableOpacity>
-      </View>
-          
-      </ScrollView>
+      <RecipeInfo recipe={recipe} />
+      
+      <TouchableOpacity style={styles.findNewRecipe} onPress={() => findNewRecipe()}>
+        {/* <Icon name="refresh-outline" size={30} color="#fff" /> */}
+        <Text>Find New Recipe</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }
@@ -119,23 +98,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  card: {
-    flex: 1,
-  },
-  topSection: {
-    flex: 6, // 60% of the height
-  },
-  bottomSection: {
-    flex: 4, // 40% of the height
-    padding: 20,
-    backgroundColor: '#fff',
-    justifyContent: 'space-between', // Ensure content is spaced out
-  },
-  image: {
-    width: '100%',
-    height: 200,
-    justifyContent: 'flex-end',
-  },
+
   buttonContainer: {
     flexDirection: 'column',
     padding: 20,
@@ -147,38 +110,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
   },
-  iconsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-
-  },
-  iconContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  text: {
-    color: '#000',
-  },
-  saveForLater: {
-    backgroundColor: '#f0ad4e',
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 10,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   findNewRecipe: {
+    flexDirection: 'row',
     backgroundColor: '#5bc0de',
     padding: 10,
     borderRadius: 5,
-    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  detailsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
   },
 });
