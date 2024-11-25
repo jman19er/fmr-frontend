@@ -35,16 +35,15 @@ npm run reset-project
 
 This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
 
-## Learn more
+## Deploy local build to IOS Device
+Guide: https://docs.expo.dev/get-started/set-up-your-environment/?platform=ios&device=physical&mode=development-build
 
-To learn more about developing your project with Expo, look at the following resources:
+```
+eas build --platform ios --profile development
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Open Settings > Privacy & Security, scroll down to the Developer Mode list item and navigate into it.
+Tap the switch to enable Developer Mode. After you do so, Settings presents an alert to warn you that Developer Mode reduces your device's security. To continue enabling Developer Mode, tap the alert's Restart button.
+After the device restarts and you unlock it, the device shows an alert confirming that you want to enable Developer Mode. Tap Turn On, and enter your device passcode when prompted.
 
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+After the build is complete, scan the QR code in your terminal and tap Open with iTunes when it appears inside the Camera app.

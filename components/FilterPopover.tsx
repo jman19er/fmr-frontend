@@ -45,6 +45,7 @@ const FilterPopover = ({ visible, onClose, onApply }: FilterPopoverProps) => {
                         <TextInput
                             style={styles.input}
                             placeholder="Keyword Search"
+                            placeholderTextColor="#3b4047"
                             keyboardType="default"
                             value={query}
                             onChangeText={setQuery}
@@ -52,6 +53,7 @@ const FilterPopover = ({ visible, onClose, onApply }: FilterPopoverProps) => {
                         <TextInput
                             style={styles.input}
                             placeholder="Max Ready Time"
+                            placeholderTextColor="#3b4047"
                             keyboardType="numeric"
                             value={maxReadyTime?.toString()}
                             onChangeText={(text) => setMaxReadyTime(text ? parseInt(text, 10) : undefined)}
@@ -61,6 +63,7 @@ const FilterPopover = ({ visible, onClose, onApply }: FilterPopoverProps) => {
                             <TextInput
                                 style={styles.macroInput}
                                 placeholder="Min Protein"
+                                placeholderTextColor="#3b4047"
                                 keyboardType="numeric"
                                 value={minProtein?.toString()}
                                 onChangeText={(text) => setMinProtein(text ? parseInt(text, 10) : undefined)}
@@ -68,6 +71,7 @@ const FilterPopover = ({ visible, onClose, onApply }: FilterPopoverProps) => {
                             <TextInput
                                 style={styles.macroInput}
                                 placeholder="Max Protein"
+                                placeholderTextColor="#3b4047"
                                 keyboardType="numeric"
                                 value={maxProtein?.toString()}
                                 onChangeText={(text) => setMaxProtein(text ? parseInt(text, 10) : undefined)}
@@ -77,6 +81,7 @@ const FilterPopover = ({ visible, onClose, onApply }: FilterPopoverProps) => {
                             <TextInput
                                 style={styles.macroInput}
                                 placeholder="Min Carbs"
+                                placeholderTextColor="#3b4047"
                                 keyboardType="numeric"
                                 value={minCarbs?.toString()}
                                 onChangeText={(text) => setMinCarbs(text ? parseInt(text, 10) : undefined)}
@@ -84,6 +89,7 @@ const FilterPopover = ({ visible, onClose, onApply }: FilterPopoverProps) => {
                             <TextInput
                                 style={styles.macroInput}
                                 placeholder="Max Carbs"
+                                placeholderTextColor="#3b4047"
                                 keyboardType="numeric"
                                 value={maxCarbs?.toString()}
                                 onChangeText={(text) => setMaxCarbs(text ? parseInt(text, 10) : undefined)}
@@ -93,6 +99,7 @@ const FilterPopover = ({ visible, onClose, onApply }: FilterPopoverProps) => {
                             <TextInput
                                 style={styles.macroInput}
                                 placeholder="Min Fat"
+                                placeholderTextColor="#3b4047"
                                 keyboardType="numeric"
                                 value={minFat?.toString()}
                                 onChangeText={(text) => setMinFat(text ? parseInt(text, 10) : undefined)}
@@ -100,6 +107,7 @@ const FilterPopover = ({ visible, onClose, onApply }: FilterPopoverProps) => {
                             <TextInput
                                 style={styles.macroInput}
                                 placeholder="Max Fat"
+                                placeholderTextColor="#3b4047"
                                 keyboardType="numeric"
                                 value={maxFat?.toString()}
                                 onChangeText={(text) => setMaxFat(text ? parseInt(text, 10) : undefined)}
@@ -109,6 +117,7 @@ const FilterPopover = ({ visible, onClose, onApply }: FilterPopoverProps) => {
                             <TextInput
                                 style={styles.macroInput}
                                 placeholder="Min Calories"
+                                placeholderTextColor="#3b4047"
                                 keyboardType="numeric"
                                 value={minCalories?.toString()}
                                 onChangeText={(text) => setMinCalories(text ? parseInt(text, 10) : undefined)}
@@ -116,6 +125,7 @@ const FilterPopover = ({ visible, onClose, onApply }: FilterPopoverProps) => {
                             <TextInput
                                 style={styles.macroInput}
                                 placeholder="Max Calories"
+                                placeholderTextColor="#3b4047"
                                 keyboardType="numeric"
                                 value={maxCalories?.toString()}
                                 onChangeText={(text) => setMaxCalories(text ? parseInt(text, 10) : undefined)}
@@ -175,7 +185,7 @@ const styles = StyleSheet.create({
         borderColor: '#ccc',
         padding: 10,
         marginBottom: 10,
-        borderRadius: 5,
+        borderRadius: 5
     },
     buttonContainer: {
         flexDirection: 'row',

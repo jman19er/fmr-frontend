@@ -5,14 +5,25 @@ import { useRoute } from '@react-navigation/native';
 import { RecipeInfoScreenRouteProp } from './navigation';
 import { useAppContext } from '@/components/AppContext';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { Recipe } from './types';
 
 const RecipeInfoScreen = () => {
     const route = useRoute<RecipeInfoScreenRouteProp>();
     const { recipe } = route.params;
 
-    const { addRecipe } = useAppContext();
+    const { addRecipe, deleteRecipe } = useAppContext();
     const [checkedSteps, setCheckedSteps] = useState<boolean[]>(new Array(recipe.analyzedInstructions[0].steps.length).fill(false));
     const [checkedIngredients, setCheckedIngredients] = useState<boolean[]>(new Array(recipe.extendedIngredients.length).fill(false));
+    const [isSaved, setIsSaved] = useState<boolean>(false);
+
+    const handleToggleRecipe = (recipe: Recipe) => {
+        if (isSaved) {
+            deleteRecipe(recipe.id);
+        } else {
+            addRecipe(recipe);
+        }
+        setIsSaved(!isSaved);
+      };
 
     const toggleCheckbox = (steps: boolean, index: number) => {
         if (steps) {
@@ -65,8 +76,8 @@ const RecipeInfoScreen = () => {
                         </View>
                     ))}
                 </View>
-                <TouchableOpacity style={styles.saveForLaterButton} onPress={() => addRecipe(recipe)}>
-                    <Text style={styles.text}>Save for Later</Text>
+                <TouchableOpacity style={styles.saveForLaterButton} onPress={() => handleToggleRecipe(recipe)}>
+                    <Text style={styles.text}>{ isSaved ? "Remove from Saved" : "Save for Later"}</Text>
                 </TouchableOpacity>
             </ScrollView>
         </View>
@@ -143,11 +154,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 4,
         width: '100%',
+        marginTop: 10,
     },
     step: {
         marginLeft: 10,
         fontSize: 16,
-        flex:1,
+        flex: 1,
         flexWrap: 'wrap', // Ensure text wraps within the container
     },
     checkedStep: {
@@ -160,10 +172,25 @@ const styles = StyleSheet.create({
         backgroundColor: '#f0ad4e',
         borderRadius: 5,
         width: '100%',
+        marginBottom: 15,
     },
     text: {
         color: '#fff',
         textAlign: 'center',
+    },
+    notificationContainer: {
+        position: 'relative',
+        top: 20,
+        left: 20,
+        right: 20,
+        padding: 10,
+        backgroundColor: '#28a745',
+        borderRadius: 5,
+        alignItems: 'center',
+    },
+    notificationText: {
+        color: '#FFF',
+        fontSize: 16,
     },
 });
 

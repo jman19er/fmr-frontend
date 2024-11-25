@@ -6,7 +6,7 @@ export type RootStackParamList = {
 
   
 export interface Recipe {
-  id: number;
+  id: string;
   title: string;
   image: string;
   readyInMinutes: number;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, FlatList, Button, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { useAppContext } from '@/components/AppContext';
 import { Recipe } from '../types';

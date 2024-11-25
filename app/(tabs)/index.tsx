@@ -10,32 +10,36 @@ import RecipeApi from '@/components/RecipeApi';
 
 export default function HomeScreen() {
   const navigation = useNavigation<HomeScreenNavigationProp>();
-  const { addRecipe } = useAppContext();
+  const { addRecipe, deleteRecipe } = useAppContext();
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [selectedRecipeIndex, setSelectedRecipeIndex] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number>(0);
+  const [isSaved, setIsSaved] = useState<boolean>(false);
+
   const recipeApi = new RecipeApi();
   const route = useRoute();
   const { filters } = route.params as { filters?: Filters } || {};
-  console.log('Filters:', filters);
-  const fetchRecipes = async () => {
+  const fetchRecipes = async (resetPage = false) => {
+    if (resetPage) {
+      setPage(0);
+    }
     setLoading(true);
     try {
-      console.log('Fetching recipes home screen');
+      console.log('Fetching recipes home screen, page:', page);
       // todo: enable users to set these filters
       const recipes = await recipeApi.searchRecipes({
         addRecipeNutrition: true,
         addRecipeInstructions: true,
         fillIngredients: true,
-        number: 2,
-        offset: page,
+        number: 10,
+        offset: resetPage ? 0 : page,
         instructionsRequired: true,
         sort: 'popularity',
         ...filters
       });
       setPage((prevPage) => {
-        return prevPage += 2;
+        return prevPage += 10;
       });
       setRecipes(recipes);
     } catch (error) {
@@ -44,6 +48,15 @@ export default function HomeScreen() {
       setLoading(false);
     }
   };
+
+  const handleToggleRecipe = (recipe: Recipe) => {
+      if (isSaved) {
+          deleteRecipe(recipe.id);
+      } else {
+          addRecipe(recipe);
+      }
+      setIsSaved(!isSaved);
+    };
 
   const findNewRecipe = () => {
     setSelectedRecipeIndex((prevIndex) => {
@@ -55,11 +68,11 @@ export default function HomeScreen() {
         return nextIndex;
       }
     });
+    setIsSaved(false);
   };
 
   useEffect(() => {
-    setPage(0);
-    fetchRecipes();
+    fetchRecipes(true);
   }, [filters]);
 
   const recipe = recipes[selectedRecipeIndex];
@@ -119,9 +132,9 @@ export default function HomeScreen() {
               </View>
             </View>
             <View style={styles.buttonContainer}>
-              <TouchableOpacity style={styles.saveForLater} onPress={() => addRecipe(recipe)}>
+              <TouchableOpacity style={styles.saveForLater} onPress={() => handleToggleRecipe(recipe)}>
                 {/* <Icon name="bookmark-outline" size={30} color="#fff" /> */}
-                <Text>Save for Later</Text>
+                <Text>{ isSaved ? "Remove from Saved" : "Save for Later"}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.findNewRecipe} onPress={() => findNewRecipe()}>
                 {/* <Icon name="refresh-outline" size={30} color="#fff" /> */}
