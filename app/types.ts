@@ -4,8 +4,20 @@ export type RootStackParamList = {
     RecipeInfo: Recipe;
   };
 
+export interface Ingredient {
+  id: number;
+  name: string;
+  amount: number;
+  unit: string;
+  originalName: string;
+}
+
+export interface Step {
+  step: string;
+}
   
 export interface Recipe {
+  extendedIngredients: any;
   id: string;
   title: string;
   image: string;

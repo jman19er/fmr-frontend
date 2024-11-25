@@ -1,15 +1,13 @@
 import 'react-native-gesture-handler';
 import { Text, StyleSheet, SafeAreaView, Image, TouchableOpacity, View, ActivityIndicator, ScrollView } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { HomeScreenNavigationProp } from '../navigation';
+import { useRoute } from '@react-navigation/native';
 import { Filters, Recipe } from '../types';
 import { useAppContext } from '@/components/AppContext';
-import Icon from 'react-native-vector-icons/Ionicons';
 import { useEffect, useState } from 'react';
 import RecipeApi from '@/components/RecipeApi';
+import RecipeOverview from '@/components/RecipeOverview';
 
 export default function HomeScreen() {
-  const navigation = useNavigation<HomeScreenNavigationProp>();
   const { addRecipe, deleteRecipe } = useAppContext();
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [selectedRecipeIndex, setSelectedRecipeIndex] = useState<number>(0);
@@ -99,64 +97,22 @@ export default function HomeScreen() {
 
     <SafeAreaView style={styles.container}>
       <ScrollView>
-        <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('RecipeInfoScreen', { recipe: recipe })}>
-          <View style={styles.topSection}>
-            <Image
-              style={styles.image}
-              source={{ uri: recipe.image }}
-              resizeMode="cover"
-            >
-            </Image>
-          </View>
-          <View style={styles.bottomSection}>
-            <Text style={styles.title}>{recipe.title}</Text>
-            <View style={styles.iconsContainer}>
-              <View style={styles.iconContainer}>
-                <Icon name="time-outline" size={20} color="#000" />
-                <Text style={styles.text}> {recipe.readyInMinutes} minutes</Text>
-              </View>
-              <View style={styles.iconContainer}>
-                <Icon name="flash" size={20} color="#000" />
-                <Text style={styles.text}> {Math.floor(recipe.nutrition.nutrients[0].amount)} calories</Text>
-              </View>
-              <View style={styles.iconContainer}>
-                <Icon name="heart" size={20} color={getHealthScoreColor(Math.floor(recipe.healthScore))} />
-                <Text style={[styles.text, { color: getHealthScoreColor(Math.floor(recipe.healthScore)) }]}>
-                  {Math.floor(recipe.healthScore)}
-
-                </Text>
-              </View>
-              <View style={styles.iconContainer}>
-                <Icon name="thumbs-up" size={20} color="#1dc420" />
-                <Text style={styles.text}> {Math.floor(recipe.aggregateLikes)}</Text>
-              </View>
-            </View>
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity style={styles.saveForLater} onPress={() => handleToggleRecipe(recipe)}>
-                {/* <Icon name="bookmark-outline" size={30} color="#fff" /> */}
-                <Text>{ isSaved ? "Remove from Saved" : "Save for Later"}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.findNewRecipe} onPress={() => findNewRecipe()}>
-                {/* <Icon name="refresh-outline" size={30} color="#fff" /> */}
-                <Text>Find New Recipe</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+      <RecipeOverview recipe={recipe} />
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.saveForLater} onPress={() => handleToggleRecipe(recipe)}>
+          {/* <Icon name="bookmark-outline" size={30} color="#fff" /> */}
+          <Text>{ isSaved ? "Remove from Saved" : "Save for Later"}</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.findNewRecipe} onPress={() => findNewRecipe()}>
+          {/* <Icon name="refresh-outline" size={30} color="#fff" /> */}
+          <Text>Find New Recipe</Text>
+        </TouchableOpacity>
+      </View>
+          
       </ScrollView>
     </SafeAreaView>
   );
 }
-
-const getHealthScoreColor = (score: number) => {
-  if (score < 4) {
-    return '#c4101f';
-  } else if (score >= 4 && score <= 6) {
-    return '#f5cb42';
-  } else {
-    return '#1dc420';
-  }
-};
 
 const styles = StyleSheet.create({
   container: {

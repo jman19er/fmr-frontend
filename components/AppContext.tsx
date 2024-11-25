@@ -6,6 +6,7 @@ type AppContextType = {
   savedRecipes: Recipe[];
   addRecipe: (recipe: Recipe) => void;
   deleteRecipe: (id: string) => void;
+  isRecipeSaved: (id: string) => boolean;
 };
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -51,12 +52,16 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     saveRecipesToStorage(updatedRecipes);
   };
 
+  const isRecipeSaved = (id: string) => {
+    return savedRecipes.some(recipe => recipe.id === id);
+  }
+
   useEffect(() => {
     loadSavedRecipes();
   }, []);
 
   return (
-    <AppContext.Provider value={{ savedRecipes, addRecipe, deleteRecipe }}>
+    <AppContext.Provider value={{ savedRecipes, addRecipe, deleteRecipe, isRecipeSaved}}>
       {children}
     </AppContext.Provider>
   );
