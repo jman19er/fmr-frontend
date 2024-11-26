@@ -37,7 +37,7 @@ class RecipeApi {
                   'Content-Type': 'application/json',
               }
           });
-      return response.data.results;
+      return response.data;
     } catch (error) {
       console.error(`Failed to fetch recipes at ${this.SEARCH_RECIPE_URL} with params ${JSON.stringify(params)}`);
       throw error;

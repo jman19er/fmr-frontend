@@ -17,7 +17,6 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   // Function to load data from AsyncStorage
   const loadSavedRecipes = async () => {
     try {
-      console.log('Loading user data');
       const data = await AsyncStorage.getItem('savedRecipes');
       if (data) {
         setSavedRecipes(JSON.parse(data));

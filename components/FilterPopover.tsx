@@ -17,6 +17,8 @@ const FilterPopover = ({ visible, onClose, onApply }: FilterPopoverProps) => {
     const [maxFat, setMaxFat] = useState<number | undefined>();
     const [minCalories, setMinCalories] = useState<number | undefined>();
     const [maxCalories, setMaxCalories] = useState<number | undefined>();
+    const [minIngredients, setMinIngredients] = useState<number | undefined>();
+    const [maxIngredients, setMaxIngredients] = useState<number | undefined>();
 
     const handleApply = () => {
         onApply({
@@ -32,6 +34,8 @@ const FilterPopover = ({ visible, onClose, onApply }: FilterPopoverProps) => {
             maxFat,
             minCalories,
             maxCalories,
+            minIngredients,
+            maxIngredients,
         });
         onClose();
     };
@@ -41,7 +45,7 @@ const FilterPopover = ({ visible, onClose, onApply }: FilterPopoverProps) => {
             <View style={styles.modalContainer}>
                 <View style={styles.modalContent}>
                     <ScrollView>
-                        <Text style={styles.modalTitle}>Filter Recipes</Text>
+                        <Text style={styles.modalTitle}>Recipe Filters</Text>
                         <TextInput
                             style={styles.input}
                             placeholder="Keyword Search"
@@ -58,6 +62,24 @@ const FilterPopover = ({ visible, onClose, onApply }: FilterPopoverProps) => {
                             value={maxReadyTime?.toString()}
                             onChangeText={(text) => setMaxReadyTime(text ? parseInt(text, 10) : undefined)}
                         />
+                        <View style={styles.row}>
+                            <TextInput
+                                style={styles.macroInput}
+                                placeholder="Min Ingredients"
+                                placeholderTextColor="#3b4047"
+                                keyboardType="numeric"
+                                value={minIngredients?.toString()}
+                                onChangeText={(text) => setMinIngredients(text ? parseInt(text, 10) : undefined)}
+                            />
+                            <TextInput
+                                style={styles.macroInput}
+                                placeholder="Max Ingredients"
+                                placeholderTextColor="#3b4047"
+                                keyboardType="numeric"
+                                value={maxIngredients?.toString()}
+                                onChangeText={(text) => setMaxIngredients(text ? parseInt(text, 10) : undefined)}
+                            />
+                        </View>
                         <Text style={styles.sectionTitle}>Macros</Text>
                         <View style={styles.row}>
                             <TextInput
@@ -169,7 +191,7 @@ const styles = StyleSheet.create({
     },
     row: {
         flexDirection: 'row',
-        justifyContent: 'space-around',
+        justifyContent: 'space-between',
         marginBottom: 5,
     },
     input: {

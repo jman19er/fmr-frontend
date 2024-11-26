@@ -16,29 +16,36 @@ export interface Step {
   step: string;
 }
   
+export interface Nutrition {
+  nutrients: Nutrient[];
+  ingredients: Ingredient[];
+}
+
+export interface Nutrient {
+  name: string;
+  amount: number;
+  unit: string;
+  percentOfDailyNeeds: number;
+}
 export interface Recipe {
   extendedIngredients: any;
   id: string;
   title: string;
   image: string;
   readyInMinutes: number;
+  aggregateLikes: number;
   analyzedInstructions: {
     steps: {
       step: string;
     }[];
   }[];
-  nutrition: {
-    nutrients: {
-      title: string;
-      amount: number;
-    }[];
+  nutrition: Nutrition;
     ingredients: {
       name: string;
       amount: number;
       unit: string;
     }[];
-  };
-}
+};
 
 export interface FilterPopoverProps {
   visible: boolean;

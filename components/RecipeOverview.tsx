@@ -1,4 +1,4 @@
-import { Recipe } from '@/app/types';
+import { Nutrient, Recipe } from '@/app/types';
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -15,6 +15,11 @@ const RecipeOverview: React.FC<RecipeOverviewProps> = ({ recipe }) => {
             setAspectRatio(width / height);
         });
     }, [recipe.image]);
+
+    const findNutrient = (nutrients: Nutrient[], nutrient: string) => {
+        return nutrients.find((n) => n.name === nutrient);
+    }
+
     return (
         <View style={styles.card}>
             <Text style={styles.heading}>At a Glance</Text>
@@ -37,7 +42,19 @@ const RecipeOverview: React.FC<RecipeOverviewProps> = ({ recipe }) => {
                     </View>
                     <View style={styles.iconContainer}>
                         <Icon name="flash" size={20} color="#000" />
-                        <Text style={styles.text}> {Math.floor(recipe.nutrition.nutrients[0].amount)} calories</Text>
+                        <Text style={styles.text}> {Math.floor(findNutrient(recipe.nutrition.nutrients, "Calories")!.amount)} calories</Text>
+                    </View>
+                    <View style={styles.iconContainer}>
+                        <Icon name="flash" size={20} color="#000" />
+                        <Text style={styles.text}> {Math.floor(findNutrient(recipe.nutrition.nutrients, "Fat")!.amount)}{findNutrient(recipe.nutrition.nutrients, "Carbohydrates")!.unit} fat</Text>
+                    </View>
+                    <View style={styles.iconContainer}>
+                        <Icon name="flash" size={20} color="#000" />
+                        <Text style={styles.text}> {Math.floor(findNutrient(recipe.nutrition.nutrients, "Carbohydrates")!.amount)}{findNutrient(recipe.nutrition.nutrients, "Carbohydrates")!.unit} carbs</Text>
+                    </View>
+                    <View style={styles.iconContainer}>
+                        <Icon name="flash" size={20} color="#000" />
+                        <Text style={styles.text}> {Math.floor(findNutrient(recipe.nutrition.nutrients, "Protein")!.amount)}{findNutrient(recipe.nutrition.nutrients, "Protein")!.unit} protein</Text>
                     </View>
                     <View style={styles.iconContainer}>
                         <Icon name="thumbs-up" size={20} color="#1dc420" />
