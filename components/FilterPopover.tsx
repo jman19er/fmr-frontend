@@ -1,6 +1,6 @@
 import { FilterPopoverProps } from '@/app/types';
 import React, { useState } from 'react';
-import { View, Text, Button, Modal, StyleSheet, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, Button, Modal, StyleSheet, TextInput, ScrollView } from 'react-native';
 
 const FilterPopover = ({ visible, onClose, onApply }: FilterPopoverProps) => {
     const [query, setQuery] = useState<string | undefined>();

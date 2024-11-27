@@ -2,7 +2,7 @@ import { Recipe } from "@/app/types";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useAppContext } from "./AppContext";
 import { useEffect, useState } from "react";
-import { Text, StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 

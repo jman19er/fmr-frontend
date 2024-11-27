@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import { Text, StyleSheet, SafeAreaView, Image, TouchableOpacity, View, ActivityIndicator } from 'react-native';
+import { Text, StyleSheet, SafeAreaView, TouchableOpacity, View, ActivityIndicator } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import { Filters, Recipe } from '../types';
 import { useEffect, useState } from 'react';

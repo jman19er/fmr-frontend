@@ -3,7 +3,6 @@ import { StyleSheet } from 'react-native';
 import Animated, { SlideInRight, SlideOutRight } from "react-native-reanimated";
 import RecipeOverview from "./RecipeOverview";
 import { CheckList } from "./CheckList";
-import { SaveRecipe } from "./SaveRecipe";
 import { renderIngredientItem } from "./RenderIngredientItem";
 import { renderStepItem } from "./RenderStepItem";
 import { Recipe } from "@/app/types";
