@@ -35,7 +35,6 @@ export default function HomeScreen() {
         sort: 'popularity',
         ...filters
       });
-      console.log('Response:', response);
       const offset = response.offset;
       const number = response.number;
       const newOffset = offset + number;

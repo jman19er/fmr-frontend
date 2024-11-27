@@ -28,6 +28,7 @@ export interface Nutrient {
   percentOfDailyNeeds: number;
 }
 export interface Recipe {
+  sourceUrl: string;
   extendedIngredients: any;
   id: string;
   title: string;

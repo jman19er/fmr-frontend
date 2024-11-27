@@ -3,9 +3,10 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { useAppContext } from "./AppContext";
 import { useEffect, useState } from "react";
 import { Text, StyleSheet, View } from "react-native";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 
-export const SaveRecipeComponent = ({ recipe }: { recipe: Recipe }) => {
+export const SaveRecipe = ({ recipe }: { recipe: Recipe }) => {
     const { addRecipe, deleteRecipe, isRecipeSaved } = useAppContext();
     const [isSaved, setIsSaved] = useState<boolean>(false);
     const handleToggleRecipe = (recipe: Recipe) => {
@@ -22,33 +23,31 @@ export const SaveRecipeComponent = ({ recipe }: { recipe: Recipe }) => {
     });
 
     return (
-        <View style={styles.container}>
             <TouchableOpacity
-                style={{ ...styles.saveForLaterButton, backgroundColor: isSaved ? '#d9534f' : '#5cb85c' }}
                 onPress={() => handleToggleRecipe(recipe)}
+                style={styles.saveRecipeButton}
             >
-                <Text style={styles.text}>{isSaved ? "Remove from Saved" : "Save for Later"}</Text>
+                <FontAwesome 
+                    size={28}
+                    name={isSaved ? 'heart-o' : 'heart'} // 'heart-o' for outlined, 'heart' for filled
+                    color="#d9534f"
+                 />
             </TouchableOpacity>
-        </View>
-
     )
 };
 
 const styles = StyleSheet.create({
-    container: {
-        width: '100%', // Ensures the container takes full width of the parent
-        alignItems: 'center', // Centers the button horizontally
-        marginTop: 15,
-    },
-    saveForLaterButton: {
-        marginTop: 10,
-        paddingVertical: 12,
-        borderRadius: 25, // Fully rounded button
-        minWidth: 200, // Minimum width of 200
-        width: '80%', // Fit button nicely on the screen
-        alignSelf: 'center', // Center button
+    saveRecipeButton: {
+        flexDirection: 'row',
         alignItems: 'center',
+        paddingVertical: 8,
+        paddingHorizontal: 5,
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.1,
+        shadowRadius: 2,
+        margin: 5,
     },
+
     saveForLaterText: {
         color: '#fff',
         fontSize: 18,

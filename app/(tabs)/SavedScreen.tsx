@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { useAppContext } from '@/components/AppContext';
@@ -8,7 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const SavedScreen = () => {
-  const { savedRecipes, deleteRecipe } = useAppContext();
+  const { savedRecipes, deleteRecipe, clearNotification } = useAppContext();
   const navigation = useNavigation<SavedScreenNavigationProp>();
 
   const renderRightActions = (itemId: string) => (
@@ -27,6 +27,13 @@ const SavedScreen = () => {
 
   );
 
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      clearNotification(); // Clear the notification when the tab is focused
+    });
+
+    return unsubscribe; // Cleanup the listener on unmount
+  }, [navigation, clearNotification]);
 
   return (
     <View style={styles.container}>

@@ -2,13 +2,9 @@ import { FilterPopoverProps } from '@/app/types';
 import React, { useState } from 'react';
 import { View, Text, Button, Modal, StyleSheet, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 
-const MAX_MACROS_DEFAULT = 10000000;
-
 const FilterPopover = ({ visible, onClose, onApply }: FilterPopoverProps) => {
     const [query, setQuery] = useState<string | undefined>();
     const [maxReadyTime, setMaxReadyTime] = useState<number | undefined>();
-    const [includeIngredients, setIncludeIngredients] = useState<string[]>([]);
-    const [excludeIngredients, setExcludeIngredients] = useState<string[]>([]);
     const [minProtein, setMinProtein] = useState<number | undefined>();
     const [maxProtein, setMaxProtein] = useState<number | undefined>();
     const [minCarbs, setMinCarbs] = useState<number | undefined>();
@@ -19,13 +15,25 @@ const FilterPopover = ({ visible, onClose, onApply }: FilterPopoverProps) => {
     const [maxCalories, setMaxCalories] = useState<number | undefined>();
     const [minIngredients, setMinIngredients] = useState<number | undefined>();
     const [maxIngredients, setMaxIngredients] = useState<number | undefined>();
+    const [error, setError] = useState<string | null>(null);
 
     const handleApply = () => {
+        // Validate numeric inputs
+        if (
+            (minProtein !== undefined && maxProtein !== undefined && minProtein > maxProtein) ||
+            (minCarbs !== undefined && maxCarbs !== undefined && minCarbs > maxCarbs) ||
+            (minFat !== undefined && maxFat !== undefined && minFat > maxFat) ||
+            (minCalories !== undefined && maxCalories !== undefined && minCalories > maxCalories) ||
+            (minIngredients !== undefined && maxIngredients !== undefined && minIngredients > maxIngredients)
+        ) {
+            setError("Ensure that minimum values are not greater than maximum values.");
+            return;
+        }
+
+        // Apply filters
         onApply({
-            query,
+            query: query?.trim(), // Trim whitespace
             maxReadyTime,
-            includeIngredients: includeIngredients.length > 0 ? includeIngredients.join(',') : undefined, // Convert array to comma-separated string or set to undefined
-            excludeIngredients: excludeIngredients.length > 0 ? excludeIngredients.join(',') : undefined, // Similarly handle excludeIngredients
             minProtein,
             maxProtein,
             minCarbs,
@@ -37,7 +45,13 @@ const FilterPopover = ({ visible, onClose, onApply }: FilterPopoverProps) => {
             minIngredients,
             maxIngredients,
         });
+        setError(null);
         onClose();
+    };
+
+    const validateNumericInput = (value: string) => {
+        const trimmedValue = value.trim();
+        return trimmedValue === "" ? undefined : parseInt(trimmedValue, 10);
     };
 
     return (
@@ -45,14 +59,15 @@ const FilterPopover = ({ visible, onClose, onApply }: FilterPopoverProps) => {
             <View style={styles.modalContainer}>
                 <View style={styles.modalContent}>
                     <ScrollView>
-                        <Text style={styles.modalTitle}>Recipe Filters</Text>
+                        <Text style={styles.modalTitle}>(Optional) Recipe Filters</Text>
+                        {error && <Text style={styles.errorText}>{error}</Text>}
                         <TextInput
                             style={styles.input}
                             placeholder="Keyword Search"
                             placeholderTextColor="#3b4047"
                             keyboardType="default"
                             value={query}
-                            onChangeText={setQuery}
+                            onChangeText={(text) => setQuery(text.trimStart())} // Dynamically trim leading spaces
                         />
                         <TextInput
                             style={styles.input}
@@ -60,8 +75,9 @@ const FilterPopover = ({ visible, onClose, onApply }: FilterPopoverProps) => {
                             placeholderTextColor="#3b4047"
                             keyboardType="numeric"
                             value={maxReadyTime?.toString()}
-                            onChangeText={(text) => setMaxReadyTime(text ? parseInt(text, 10) : undefined)}
+                            onChangeText={(text) => setMaxReadyTime(validateNumericInput(text))}
                         />
+                        {/* Example for Min and Max Inputs */}
                         <View style={styles.row}>
                             <TextInput
                                 style={styles.macroInput}
@@ -69,7 +85,7 @@ const FilterPopover = ({ visible, onClose, onApply }: FilterPopoverProps) => {
                                 placeholderTextColor="#3b4047"
                                 keyboardType="numeric"
                                 value={minIngredients?.toString()}
-                                onChangeText={(text) => setMinIngredients(text ? parseInt(text, 10) : undefined)}
+                                onChangeText={(text) => setMinIngredients(validateNumericInput(text))}
                             />
                             <TextInput
                                 style={styles.macroInput}
@@ -77,10 +93,9 @@ const FilterPopover = ({ visible, onClose, onApply }: FilterPopoverProps) => {
                                 placeholderTextColor="#3b4047"
                                 keyboardType="numeric"
                                 value={maxIngredients?.toString()}
-                                onChangeText={(text) => setMaxIngredients(text ? parseInt(text, 10) : undefined)}
+                                onChangeText={(text) => setMaxIngredients(validateNumericInput(text))}
                             />
                         </View>
-                        <Text style={styles.sectionTitle}>Macros</Text>
                         <View style={styles.row}>
                             <TextInput
                                 style={styles.macroInput}
@@ -88,7 +103,7 @@ const FilterPopover = ({ visible, onClose, onApply }: FilterPopoverProps) => {
                                 placeholderTextColor="#3b4047"
                                 keyboardType="numeric"
                                 value={minProtein?.toString()}
-                                onChangeText={(text) => setMinProtein(text ? parseInt(text, 10) : undefined)}
+                                onChangeText={(text) => setMinProtein(validateNumericInput(text))}
                             />
                             <TextInput
                                 style={styles.macroInput}
@@ -96,7 +111,7 @@ const FilterPopover = ({ visible, onClose, onApply }: FilterPopoverProps) => {
                                 placeholderTextColor="#3b4047"
                                 keyboardType="numeric"
                                 value={maxProtein?.toString()}
-                                onChangeText={(text) => setMaxProtein(text ? parseInt(text, 10) : undefined)}
+                                onChangeText={(text) => setMaxProtein(validateNumericInput(text))}
                             />
                         </View>
                         <View style={styles.row}>
@@ -106,7 +121,7 @@ const FilterPopover = ({ visible, onClose, onApply }: FilterPopoverProps) => {
                                 placeholderTextColor="#3b4047"
                                 keyboardType="numeric"
                                 value={minCarbs?.toString()}
-                                onChangeText={(text) => setMinCarbs(text ? parseInt(text, 10) : undefined)}
+                                onChangeText={(text) => setMinCarbs(validateNumericInput(text))}
                             />
                             <TextInput
                                 style={styles.macroInput}
@@ -114,7 +129,7 @@ const FilterPopover = ({ visible, onClose, onApply }: FilterPopoverProps) => {
                                 placeholderTextColor="#3b4047"
                                 keyboardType="numeric"
                                 value={maxCarbs?.toString()}
-                                onChangeText={(text) => setMaxCarbs(text ? parseInt(text, 10) : undefined)}
+                                onChangeText={(text) => setMaxCarbs(validateNumericInput(text))}
                             />
                         </View>
                         <View style={styles.row}>
@@ -124,7 +139,7 @@ const FilterPopover = ({ visible, onClose, onApply }: FilterPopoverProps) => {
                                 placeholderTextColor="#3b4047"
                                 keyboardType="numeric"
                                 value={minFat?.toString()}
-                                onChangeText={(text) => setMinFat(text ? parseInt(text, 10) : undefined)}
+                                onChangeText={(text) => setMinFat(validateNumericInput(text))}
                             />
                             <TextInput
                                 style={styles.macroInput}
@@ -132,7 +147,7 @@ const FilterPopover = ({ visible, onClose, onApply }: FilterPopoverProps) => {
                                 placeholderTextColor="#3b4047"
                                 keyboardType="numeric"
                                 value={maxFat?.toString()}
-                                onChangeText={(text) => setMaxFat(text ? parseInt(text, 10) : undefined)}
+                                onChangeText={(text) => setMaxFat(validateNumericInput(text))}
                             />
                         </View>
                         <View style={styles.row}>
@@ -142,7 +157,7 @@ const FilterPopover = ({ visible, onClose, onApply }: FilterPopoverProps) => {
                                 placeholderTextColor="#3b4047"
                                 keyboardType="numeric"
                                 value={minCalories?.toString()}
-                                onChangeText={(text) => setMinCalories(text ? parseInt(text, 10) : undefined)}
+                                onChangeText={(text) => setMinCalories(validateNumericInput(text))}
                             />
                             <TextInput
                                 style={styles.macroInput}
@@ -150,7 +165,7 @@ const FilterPopover = ({ visible, onClose, onApply }: FilterPopoverProps) => {
                                 placeholderTextColor="#3b4047"
                                 keyboardType="numeric"
                                 value={maxCalories?.toString()}
-                                onChangeText={(text) => setMaxCalories(text ? parseInt(text, 10) : undefined)}
+                                onChangeText={(text) => setMaxCalories(validateNumericInput(text))}
                             />
                         </View>
                         <View style={styles.buttonContainer}>
@@ -160,7 +175,6 @@ const FilterPopover = ({ visible, onClose, onApply }: FilterPopoverProps) => {
                     </ScrollView>
                 </View>
             </View>
-
         </Modal>
     );
 };
@@ -184,11 +198,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 20,
     },
-    sectionTitle: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        marginBottom: 10,
-    },
     row: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -207,11 +216,15 @@ const styles = StyleSheet.create({
         borderColor: '#ccc',
         padding: 10,
         marginBottom: 10,
-        borderRadius: 5
+        borderRadius: 5,
     },
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
+    },
+    errorText: {
+        color: 'red',
+        marginBottom: 10,
     },
 });
 

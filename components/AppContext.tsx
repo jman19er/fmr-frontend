@@ -7,12 +7,15 @@ type AppContextType = {
   addRecipe: (recipe: Recipe) => void;
   deleteRecipe: (id: string) => void;
   isRecipeSaved: (id: string) => boolean;
+  clearNotification: () => void;
+  notification: Boolean;
 };
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [savedRecipes, setSavedRecipes] = useState<Recipe[]>([]);
+  const [notification, setNotification] = useState<Boolean>(false);
 
   // Function to load data from AsyncStorage
   const loadSavedRecipes = async () => {
@@ -41,6 +44,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const addRecipe = (newRecipe: Recipe) => {
     const updatedRecipes = [...savedRecipes.filter(recipe => recipe.id != newRecipe.id), newRecipe];
     setSavedRecipes(updatedRecipes);
+    setNotification(true);
     saveRecipesToStorage(updatedRecipes);
   };
 
@@ -55,12 +59,16 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     return savedRecipes.some(recipe => recipe.id === id);
   }
 
+  const clearNotification = () => {
+    setNotification(false);
+  };
+
   useEffect(() => {
     loadSavedRecipes();
   }, []);
 
   return (
-    <AppContext.Provider value={{ savedRecipes, addRecipe, deleteRecipe, isRecipeSaved}}>
+    <AppContext.Provider value={{ savedRecipes, addRecipe, deleteRecipe, isRecipeSaved, clearNotification, notification}}>
       {children}
     </AppContext.Provider>
   );

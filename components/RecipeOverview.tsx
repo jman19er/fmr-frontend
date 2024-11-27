@@ -1,7 +1,8 @@
 import { Nutrient, Recipe } from '@/app/types';
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, Share, TouchableOpacity, Linking } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { SaveRecipe } from './SaveRecipe';
 
 interface RecipeOverviewProps {
     recipe: Recipe;
@@ -19,6 +20,32 @@ const RecipeOverview: React.FC<RecipeOverviewProps> = ({ recipe }) => {
     const findNutrient = (nutrients: Nutrient[], nutrient: string) => {
         return nutrients.find((n) => n.name === nutrient);
     }
+
+    const openInBrowser = () => {
+        Linking.openURL(recipe.sourceUrl).catch((err) => 
+            console.error('Error opening the recipe in browser:', err)
+        );
+    };
+
+
+    const handleShare = async () => {
+        try {
+            await Share.share({
+                message: `Check out this recipe: ${recipe.title}\n${recipe.sourceUrl}`,
+            });
+        } catch (error) {
+            console.error('Error sharing the recipe:', error);
+        }
+    };
+
+    const saveToPinterest = () => {
+        const pinterestUrl = `https://www.pinterest.com/pin/create/button/?url=${encodeURIComponent(
+            recipe.sourceUrl
+        )}&media=${encodeURIComponent(recipe.image)}&description=${encodeURIComponent(recipe.title)}`;
+        Linking.openURL(pinterestUrl).catch((err) => 
+            console.error('Error opening Pinterest URL:', err)
+        );
+    };
 
     return (
         <View style={styles.card}>
@@ -60,6 +87,18 @@ const RecipeOverview: React.FC<RecipeOverviewProps> = ({ recipe }) => {
                         <Icon name="thumbs-up" size={20} color="#1dc420" />
                         <Text style={styles.text}> {Math.floor(recipe.aggregateLikes)} likes</Text>
                     </View>
+                    <View style={styles.actionRow}>
+                        <TouchableOpacity style={styles.actionButton} onPress={handleShare}>
+                            <Icon name="share-social-outline" size={28} color="#1e90ff" />
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.actionButton} onPress={openInBrowser}>
+                            <Icon name="open-outline" size={28} color="#1e90ff" />
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.pinterestButton} onPress={saveToPinterest}>
+                            <Icon name="logo-pinterest" size={28} color="#E60023" />
+                        </TouchableOpacity>
+                        <SaveRecipe recipe={recipe} />
+                    </View>
                 </View>
             </View>
         </View>
@@ -81,7 +120,7 @@ const styles = StyleSheet.create({
     bottomSection: {
         padding: 10,
         backgroundColor: '#fff',
-        justifyContent: 'space-between', // Ensure content is spaced out
+        justifyContent: 'space-between',
     },
     image: {
         width: '90%',
@@ -95,18 +134,47 @@ const styles = StyleSheet.create({
     iconsContainer: {
         flexDirection: 'row',
         flexWrap: 'wrap', // Allows wrapping to the next row
-        justifyContent: 'space-evenly', // Evenly distribute icons in the row
+        justifyContent: 'space-evenly',
         marginTop: 5,
     },
     iconContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         flexBasis: '30%', // Each icon takes up 30% of the row width
-        margin: 5, // Add some spacing between icons
-    },    text: {
+        margin: 5,
+    },
+    text: {
         color: '#000',
     },
+    actionRow: {
+        flexDirection: 'row',
+        flexWrap: 'wrap', // Allows buttons to wrap to the next row
+        justifyContent: 'space-around', // Space between buttons
+        alignItems: 'center',
+        marginTop: 15,
+        paddingHorizontal: 5, // Reduced padding for compactness
+    },
+    actionButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 8,
+        paddingHorizontal: 5,
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.1,
+        shadowRadius: 2,
+        margin: 5, // Margin for spacing between buttons
+    },
+    pinterestButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: 8,
+        paddingHorizontal: 15,
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.1,
+        shadowRadius: 2,
+        margin: 5,
+    },
 });
-
 
 export default RecipeOverview;

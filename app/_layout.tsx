@@ -5,7 +5,7 @@ import FilterPopover from '@/components/FilterPopover';
 import React, { useState } from 'react';
 import { Filters } from './types';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 export default function Layout() {
@@ -23,17 +23,22 @@ export default function Layout() {
       <AppProvider>
         <Stack>
           <Stack.Screen name="(tabs)" options={{
-            headerTitle: 'Find My Recipe', // Hide the title next to the back arrow
+            headerTitle: 'What\'s for Dinner?', // Hide the title next to the back arrow
             headerRight: () => (
-              <TouchableOpacity onPress={() => setFilterVisible(true)}>
+              <TouchableOpacity
+              style={styles.filterContainer}
+              onPress={() => setFilterVisible(true)}
+            >
+              <View style={styles.iconTextWrapper}>
                 <Icon name="filter-outline" size={24} color="#000" />
-              </TouchableOpacity>
-            ),
+                <Text style={styles.filterText}>Filters</Text>
+              </View>
+            </TouchableOpacity>            ),
             }}
             initialParams={{ filters }}
           />
           <Stack.Screen name="RecipeInfoScreen" options={{
-            headerTitle: 'Find My Recipe',
+            headerTitle: 'What\'s for Dinner?',
             headerBackTitleVisible: false, // Hide the title next to the back arrow
           }} />
         </Stack>
@@ -46,3 +51,20 @@ export default function Layout() {
     </GestureHandlerRootView>
   );
 }
+const styles = StyleSheet.create({
+  filterContainer: {
+    marginRight: 10, // Add space from the edge of the screen
+  },
+  iconTextWrapper: {
+    flexDirection: 'column', // Icon and text aligned horizontally
+    alignItems: 'center', // Center them vertically
+  },
+  filterText: {
+    marginLeft: 4, // Space between icon and text
+    fontSize: 12, // Modern, small font size
+    color: '#555', // Subtle, neutral color
+    fontWeight: '300', // Light font for a sleek look
+    letterSpacing: 0.5, // Slight spacing for a modern touch
+    textTransform: 'capitalize', // Text looks polished and clean
+  },
+});

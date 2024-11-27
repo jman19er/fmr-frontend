@@ -5,6 +5,7 @@ interface CheckListProps<T> {
   items: T[];
   renderItem: (item: T, checked: boolean, toggleCheckbox: () => void) => JSX.Element;
   heading: string;
+  footer?: string;
 }
 
 export const CheckList = <T,>({ items, renderItem, heading }: CheckListProps<T>) => {

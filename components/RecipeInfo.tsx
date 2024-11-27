@@ -3,32 +3,33 @@ import { StyleSheet } from 'react-native';
 import Animated, { SlideInRight, SlideOutRight } from "react-native-reanimated";
 import RecipeOverview from "./RecipeOverview";
 import { CheckList } from "./CheckList";
-import { SaveRecipeComponent } from "./SaveRecipeComponent";
+import { SaveRecipe } from "./SaveRecipe";
 import { renderIngredientItem } from "./RenderIngredientItem";
 import { renderStepItem } from "./RenderStepItem";
 import { Recipe } from "@/app/types";
 
 export const RecipeInfo = ({ recipe }: { recipe: Recipe }) => {
+    const ingredients = recipe?.extendedIngredients || [];
+    const instructions = recipe.analyzedInstructions[0]?.steps || [];
+
     return (
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
             {/* Section 1 */}
             <Animated.View entering={SlideInRight} exiting={SlideOutRight} style={styles.card}>
-
                 <RecipeOverview recipe={recipe} />
             </Animated.View>
 
             {/* Section 2 */}
-            <Animated.View entering={SlideInRight} exiting={SlideOutRight} style={styles.card}>
-
-                <CheckList items={recipe.extendedIngredients} renderItem={renderIngredientItem} heading="Ingredients" />
-            </Animated.View>
-            <Animated.View entering={SlideInRight} exiting={SlideOutRight} style={styles.card}>
-
-                <CheckList items={recipe.analyzedInstructions[0].steps} renderItem={renderStepItem} heading="Steps" />
-            </Animated.View>
-
-            {/* Section 3 */}
-            <SaveRecipeComponent recipe={recipe} />
+            { ingredients.length > 0 && 
+                <Animated.View entering={SlideInRight} exiting={SlideOutRight} style={styles.card}>
+                    <CheckList items={ingredients} renderItem={renderIngredientItem} heading="Ingredients" />
+                  </Animated.View>
+            }
+            { instructions.length > 0 &&
+                <Animated.View entering={SlideInRight} exiting={SlideOutRight} style={styles.card}>
+                    <CheckList items={instructions} renderItem={renderStepItem} heading="Steps"/>
+                </Animated.View>
+            }
         </ScrollView>
     );
 }
