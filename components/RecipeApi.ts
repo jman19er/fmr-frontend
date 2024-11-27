@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 
+
 interface RecipeApiParams {
   [key: string]: any;
   query?: string;
@@ -25,7 +26,7 @@ interface RecipeApiParams {
 }
 
 class RecipeApi {
-  private SEARCH_RECIPE_URL = 'https://8xsda2kbj1.execute-api.us-east-1.amazonaws.com/default/search?';
+  private SEARCH_RECIPE_URL = process.env.EXPO_PUBLIC_SEARCH_RECIPE_URL;
   searchRecipes = async (params: RecipeApiParams): Promise<any> => {
     try {
       const transfromedParams = this.transformParms(params);

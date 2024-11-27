@@ -6,13 +6,19 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_SEARCH_RECIPE_URL": "https://8xsda2kbj1.execute-api.us-east-1.amazonaws.com/default/search?"
+      }
     },
     "preview": {
       "distribution": "internal"
     },
     "production": {
-      "autoIncrement": true
+      "autoIncrement": true,
+      "env": {
+        "EXPO_PUBLIC_SEARCH_RECIPE_URL": "https://8xsda2kbj1.execute-api.us-east-1.amazonaws.com/default/search?"
+      }
     }
   },
   "submit": {
