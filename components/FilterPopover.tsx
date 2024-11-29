@@ -59,7 +59,8 @@ const FilterPopover = ({ visible, onClose, onApply }: FilterPopoverProps) => {
             <View style={styles.modalContainer}>
                 <View style={styles.modalContent}>
                     <ScrollView>
-                        <Text style={styles.modalTitle}>(Optional) Recipe Filters</Text>
+                        <Text style={styles.modalTitle}>Recipe Filters</Text>
+                        <Text style={styles.subtext}>all filters are optional</Text>
                         {error && <Text style={styles.errorText}>{error}</Text>}
                         <TextInput
                             style={styles.input}
@@ -196,7 +197,6 @@ const styles = StyleSheet.create({
     modalTitle: {
         fontSize: 20,
         fontWeight: 'bold',
-        marginBottom: 20,
     },
     row: {
         flexDirection: 'row',
@@ -226,6 +226,12 @@ const styles = StyleSheet.create({
         color: 'red',
         marginBottom: 10,
     },
+    subtext: {
+        color: '#3b4047',
+        marginTop: 5,
+        marginBottom: 10,
+        fontStyle: 'italic',
+    }
 });
 
 export default FilterPopover;

@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "What's for Dinner?",
-    "slug": "What's for Dinner?",
+    "name": "MacroMatch",
+    "slug": "fmr-frontend",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -20,7 +20,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.jman19er.fmrfrontend"
     },
     "web": {
       "bundler": "metro",

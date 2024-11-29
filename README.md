@@ -49,3 +49,9 @@ After the device restarts and you unlock it, the device shows an alert confirmin
 After the build is complete, scan the QR code in your terminal and tap Open with iTunes when it appears inside the Camera app.
 
 ## Deploy build for IOS device to production
+https://docs.expo.dev/distribution/app-stores/
+
+### Update the version in app.json
+https://docs.expo.dev/build-reference/app-versions/
+
+### 

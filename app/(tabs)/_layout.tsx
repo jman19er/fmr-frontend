@@ -40,7 +40,16 @@ export default function TabsLayout() {
           tabBarIcon: SavedTabIcon,
         }}
       />
-    </Tabs>
+
+      <Tabs.Screen
+        name="ProfileScreen"
+        options={{
+          title: 'Info',
+          headerShown: false,
+          tabBarIcon: ({ color }) => <FontAwesome size={28} name="info" color={color}/>
+        }}
+      />
+      </Tabs>
   );
 }
 

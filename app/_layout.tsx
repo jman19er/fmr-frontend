@@ -28,7 +28,7 @@ export default function Layout() {
       <AppProvider>
         <Stack>
           <Stack.Screen name="(tabs)" options={{
-            headerTitle: 'What\'s for Dinner?', // Hide the title next to the back arrow
+            headerTitle: 'MacroMatch', // Hide the title next to the back arrow
             headerRight: () => (
               <TouchableOpacity
               style={styles.filterContainer}
@@ -43,7 +43,7 @@ export default function Layout() {
             initialParams={{ filters }}
           />
           <Stack.Screen name="RecipeInfoScreen" options={{
-            headerTitle: 'What\'s for Dinner?',
+            headerTitle: 'MacroMatch',
             headerBackTitleVisible: false, // Hide the title next to the back arrow
           }} />
         </Stack>

@@ -22,6 +22,12 @@
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios": {
+        "appleId": "hagemanjosh@gmail.com",
+        "ascAppId": "6738846037",
+        "appleTeamId": "A9CAC67H2V"
+      }
+    }
   }
 }
