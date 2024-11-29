@@ -1,5 +1,5 @@
 import { Step } from "@/app/types";
-import CheckBox from "@react-native-community/checkbox";
+import CheckBox from "expo-checkbox";
 import { Text, StyleSheet, View } from 'react-native';
 
 export const renderStepItem = (step: Step, checked: boolean, toggleCheckbox: () => void) => (

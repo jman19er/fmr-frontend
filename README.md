@@ -47,3 +47,5 @@ Tap the switch to enable Developer Mode. After you do so, Settings presents an a
 After the device restarts and you unlock it, the device shows an alert confirming that you want to enable Developer Mode. Tap Turn On, and enter your device passcode when prompted.
 
 After the build is complete, scan the QR code in your terminal and tap Open with iTunes when it appears inside the Camera app.
+
+## Deploy build for IOS device to production

@@ -1,16 +1,16 @@
 {
   "expo": {
-    "name": "fmr-frontend",
-    "slug": "fmr-frontend",
+    "name": "What's for Dinner?",
+    "slug": "What's for Dinner?",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/splash.png",
+      "image": "./assets/images/padded-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#fff"
     },
     "ios": {
       "supportsTablet": true,
@@ -18,17 +18,28 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#ffffff"
       }
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/icon.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#fff",
+          "image": "./assets/images/icon.png",
+          "dark": {
+            "image": "./assets/images/icon.png",
+            "backgroundColor": "#000"
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

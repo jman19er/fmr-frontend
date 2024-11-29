@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import RecipeApi from '@/components/RecipeApi';
 import { RecipeInfo } from '@/components/RecipeInfo';
 
-const PAGE_SIZE = 5 ;
+const PAGE_SIZE = 5;
 
 export default function HomeScreen() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);

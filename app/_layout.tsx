@@ -7,11 +7,16 @@ import { Filters } from './types';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import * as SplashScreen from 'expo-splash-screen';
+
+// Keep the splash screen visible while we fetch resources
+SplashScreen.preventAutoHideAsync();
+
 
 export default function Layout() {
   const [filterVisible, setFilterVisible] = useState(false);
   const [filters, setFilters] = useState({});
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
 
   const handleApplyFilters = (newFilters: Filters) => {
     setFilters(newFilters);

@@ -1,5 +1,5 @@
 import { Ingredient } from "@/app/types";
-import CheckBox from "@react-native-community/checkbox";
+import CheckBox from "expo-checkbox";
 import { View, Text, StyleSheet } from 'react-native';
 
 export const renderIngredientItem = (ingredient: Ingredient, checked: boolean, toggleCheckbox: () => void) => (

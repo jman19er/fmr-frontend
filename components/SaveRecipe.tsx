@@ -29,7 +29,7 @@ export const SaveRecipe = ({ recipe }: { recipe: Recipe }) => {
             >
                 <FontAwesome 
                     size={28}
-                    name={isSaved ? 'heart-o' : 'heart'} // 'heart-o' for outlined, 'heart' for filled
+                    name={isSaved ? 'heart' : 'heart-o' } // 'heart-o' for outlined, 'heart' for filled
                     color="#d9534f"
                  />
             </TouchableOpacity>
