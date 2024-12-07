@@ -51,6 +51,11 @@ After the build is complete, scan the QR code in your terminal and tap Open with
 ## Deploy build for IOS device to production
 https://docs.expo.dev/distribution/app-stores/
 
+```
+eas build --platform ios --profile production
+eas submit
+```
+
 ### Update the version in app.json
 https://docs.expo.dev/build-reference/app-versions/
 

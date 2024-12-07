@@ -8,8 +8,8 @@ export default function TabsLayout() {
   const { notification } = useAppContext();
 
   const SavedTabIcon = ({ color }: { color: string }) => (
-    <View style={styles.iconContainer}>
-      <FontAwesome size={28} name="heart" color={color} />
+    <View style={styles.tabIconWrapper}>
+      <FontAwesome size={25} name="heart" color={color} />
       {notification && (
         <View style={styles.badge}>
           <Text style={styles.badgeText}>New</Text>
@@ -18,20 +18,23 @@ export default function TabsLayout() {
     </View>
   );
 
-  useEffect(() => { 
-    console.log("Notification value: ", notification);
+  useEffect(() => {
+    console.log('Notification value: ', notification);
   }, [notification]);
-  
+
   return (
     <Tabs>
       <Tabs.Screen
         name="index"
         options={{
-        title: 'Explore',
-        headerShown: false,
-        tabBarIcon: ({ color }) => <FontAwesome size={28} name="home" color={color}/>
-      }} />
-
+          title: 'Home',
+          tabBarIcon: ({ color }) => (
+            <View style={styles.tabIconWrapper}>
+              <FontAwesome size={25} name="home" color={color} />
+            </View>
+          ),
+        }}
+      />
       <Tabs.Screen
         name="SavedScreen"
         options={{
@@ -40,41 +43,49 @@ export default function TabsLayout() {
           tabBarIcon: SavedTabIcon,
         }}
       />
-
       <Tabs.Screen
         name="ProfileScreen"
         options={{
           title: 'Info',
           headerShown: false,
-          tabBarIcon: ({ color }) => <FontAwesome size={28} name="info" color={color}/>
+          tabBarIcon: ({ color }) => (
+            <View style={styles.tabIconWrapper}>
+              <FontAwesome size={25} name="info" color={color} />
+            </View>
+          ),
         }}
       />
-      </Tabs>
+    </Tabs>
   );
 }
 
 const styles = StyleSheet.create({
-  iconContainer: {
-    position: 'relative',
+  tabIconWrapper: {
+    position: 'relative', // Position the badge
+    justifyContent: 'center', // Center vertically
+    alignItems: 'center', // Center horizontally
+    width: 50, // Fixed width for consistency
+    height: 50, // Fixed height for consistency
+    borderRadius: 25, // Keep circular
   },
   badge: {
     position: 'absolute',
-    top: -10, // Position the badge higher
-    right: -15, // Move the badge further to the right
-    backgroundColor: '#ff4d4d', // Sleek, modern red color
-    borderRadius: 12, // Rounded shape
-    paddingHorizontal: 6, // Adjust horizontal padding for text
-    paddingVertical: 3, // Adjust vertical padding for sleekness
-    shadowColor: '#000', // Shadow for depth
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
-    elevation: 3, // For Android shadow
+    top: -6, // Slightly above the icon
+    right: -6, // Slightly to the right
+    backgroundColor: '#ff4d4d', // Modern red color
+    borderRadius: 12, // Fully rounded
+    paddingHorizontal: 5, // Adjust for sleekness
+    paddingVertical: 2, // Adjust for sleekness
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 4, // Android shadow
   },
   badgeText: {
     color: 'white',
     fontSize: 10,
     fontWeight: '600', // Semi-bold for modern look
-    textTransform: 'uppercase', // Uppercase for clean design
+    textTransform: 'uppercase', // Uppercase for sleek style
   },
 });
