@@ -4,7 +4,7 @@
     "slug": "fmr-frontend",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/adaptive-icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
@@ -14,7 +14,8 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.fmr-frontend"
+      "bundleIdentifier": "com.anonymous.fmr-frontend",
+      "icon": "./assets/images/adaptive-icon.png",
     },
     "android": {
       "adaptiveIcon": {

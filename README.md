@@ -54,4 +54,5 @@ https://docs.expo.dev/distribution/app-stores/
 ### Update the version in app.json
 https://docs.expo.dev/build-reference/app-versions/
 
-### 
+### Marketing and support page
+See feedback at https://manage.mvphome.pro/mvps/2wrye4aq903z2csvmqpvnh429sc7tw0
