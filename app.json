@@ -14,8 +14,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.fmr-frontend",
-      "icon": "./assets/images/adaptive-icon.png",
+      "bundleIdentifier": "com.anonymous.fmr-frontend"
     },
     "android": {
       "adaptiveIcon": {
@@ -30,18 +29,7 @@
       "favicon": "./assets/images/icon.png"
     },
     "plugins": [
-      "expo-router",
-      [
-        "expo-splash-screen",
-        {
-          "backgroundColor": "#fff",
-          "image": "./assets/images/icon.png",
-          "dark": {
-            "image": "./assets/images/icon.png",
-            "backgroundColor": "#000"
-          }
-        }
-      ]
+      "expo-router"
     ],
     "experiments": {
       "typedRoutes": true
