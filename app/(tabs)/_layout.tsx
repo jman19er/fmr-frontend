@@ -28,6 +28,7 @@ export default function TabsLayout() {
         name="index"
         options={{
           title: 'Home',
+          headerShown: false,
           tabBarIcon: ({ color }) => (
             <View style={styles.tabIconWrapper}>
               <FontAwesome size={25} name="home" color={color} />
