@@ -1,6 +1,7 @@
 import { Nutrient, Recipe } from '@/app/types';
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet, Share, TouchableOpacity, Linking } from 'react-native';
+import Animated, { RotateInUpLeft, RotateOutDownRight } from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SaveRecipe } from './SaveRecipe';
 
@@ -19,14 +20,7 @@ const RecipeOverview: React.FC<RecipeOverviewProps> = ({ recipe }) => {
 
     const findNutrient = (nutrients: Nutrient[], nutrient: string) => {
         return nutrients.find((n) => n.name === nutrient);
-    }
-
-    const openInBrowser = () => {
-        Linking.openURL(recipe.sourceUrl).catch((err) => 
-            console.error('Error opening the recipe in browser:', err)
-        );
     };
-
 
     const handleShare = async () => {
         try {
@@ -53,53 +47,59 @@ const RecipeOverview: React.FC<RecipeOverviewProps> = ({ recipe }) => {
 
             <View style={styles.topSection}>
                 {aspectRatio && (
-                    <Image
+                    <Animated.Image
                         style={[styles.image, { aspectRatio }]}
                         source={{ uri: recipe.image }}
                         resizeMode="cover"
+                        entering={RotateInUpLeft} // Rotate in from the top-left
+                        exiting={RotateOutDownRight} // Rotate out to the bottom-right
+            
                     />
                 )}
             </View>
             <View style={styles.bottomSection}>
                 <Text style={styles.title}>{recipe.title}</Text>
-                <View style={styles.iconsContainer}>
-                    <View style={styles.iconContainer}>
-                        <Icon name="time-outline" size={20} color="#000" />
-                        <Text style={styles.text}> {recipe.readyInMinutes} minutes</Text>
-                    </View>
-                    <View style={styles.iconContainer}>
-                        <Icon name="flash" size={20} color="#000" />
-                        <Text style={styles.text}> {Math.floor(findNutrient(recipe.nutrition.nutrients, "Calories")!.amount)} calories</Text>
-                    </View>
-                    <View style={styles.iconContainer}>
-                        <Icon name="flash" size={20} color="#000" />
-                        <Text style={styles.text}> {Math.floor(findNutrient(recipe.nutrition.nutrients, "Fat")!.amount)}{findNutrient(recipe.nutrition.nutrients, "Carbohydrates")!.unit} fat</Text>
-                    </View>
-                    <View style={styles.iconContainer}>
-                        <Icon name="flash" size={20} color="#000" />
-                        <Text style={styles.text}> {Math.floor(findNutrient(recipe.nutrition.nutrients, "Carbohydrates")!.amount)}{findNutrient(recipe.nutrition.nutrients, "Carbohydrates")!.unit} carbs</Text>
-                    </View>
-                    <View style={styles.iconContainer}>
-                        <Icon name="flash" size={20} color="#000" />
-                        <Text style={styles.text}> {Math.floor(findNutrient(recipe.nutrition.nutrients, "Protein")!.amount)}{findNutrient(recipe.nutrition.nutrients, "Protein")!.unit} protein</Text>
-                    </View>
-                    <View style={styles.iconContainer}>
-                        <Icon name="thumbs-up" size={20} color="#1dc420" />
-                        <Text style={styles.text}> {Math.floor(recipe.aggregateLikes)} likes</Text>
+                    <View style={styles.infoRows}>
+                        <View style={styles.iconContainer}>
+                            <Icon name="time-outline" size={20} color="#000" />
+                            <Text style={styles.text}> {recipe.readyInMinutes} minutes</Text>
+                        </View>
+                        <View style={styles.iconContainer}>
+                            <Icon name="flash" size={20} color="#000" />
+                            <Text style={styles.text}> {Math.floor(findNutrient(recipe.nutrients, "Energy")!.amount)} calories</Text>
+                        </View>
+                        {
+                            recipe.servings && (
+                                <View style={styles.iconContainer}>
+                                <Icon name="person" size={20} color="#000"/>
+                                <Text style={styles.text}> {recipe.servings} servings</Text>
+                            </View>
+                            )
+                        }
+
+                        <View style={styles.iconContainer}>
+                            <Icon name="flash" size={20} color="#000" />
+                            <Text style={styles.text}> {Math.floor(findNutrient(recipe.nutrients, "Fat")!.amount)}{findNutrient(recipe.nutrients, "Fat")!.unit} fat</Text>
+                        </View>
+                        <View style={styles.iconContainer}>
+                            <Icon name="flash" size={20} color="#000" />
+                            <Text style={styles.text}> {Math.floor(findNutrient(recipe.nutrients, "Carbs")!.amount)}{findNutrient(recipe.nutrients, "Carbs")!.unit} carbs</Text>
+                        </View>
+                        <View style={styles.iconContainer}>
+                            <Icon name="flash" size={20} color="#000" />
+                            <Text style={styles.text}> {Math.floor(findNutrient(recipe.nutrients, "Protein")!.amount)}{findNutrient(recipe.nutrients, "Protein")!.unit} protein</Text>
+                        </View>
                     </View>
                     <View style={styles.actionRow}>
                         <TouchableOpacity style={styles.actionButton} onPress={handleShare}>
                             <Icon name="share-social-outline" size={28} color="#1e90ff" />
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.actionButton} onPress={openInBrowser}>
-                            <Icon name="open-outline" size={28} color="#1e90ff" />
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.pinterestButton} onPress={saveToPinterest}>
                             <Icon name="logo-pinterest" size={28} color="#E60023" />
                         </TouchableOpacity>
                         <SaveRecipe recipe={recipe} />
                     </View>
-                </View>
+            
             </View>
         </View>
     );
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     bottomSection: {
         padding: 10,
         backgroundColor: '#fff',
-        justifyContent: 'space-between',
+        justifyContent: 'space-evenly',
     },
     image: {
         width: '90%',
@@ -131,13 +131,14 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 18,
     },
-    iconsContainer: {
+    infoRows: {
         flexDirection: 'row',
         flexWrap: 'wrap', // Allows wrapping to the next row
-        justifyContent: 'space-evenly',
+        justifyContent: 'space-evenly', // Space between icons
         marginTop: 5,
     },
     iconContainer: {
+        justifyContent: 'center',
         flexDirection: 'row',
         alignItems: 'center',
         flexBasis: '30%', // Each icon takes up 30% of the row width
@@ -149,7 +150,7 @@ const styles = StyleSheet.create({
     actionRow: {
         flexDirection: 'row',
         flexWrap: 'wrap', // Allows buttons to wrap to the next row
-        justifyContent: 'space-around', // Space between buttons
+        justifyContent: 'space-evenly', // Space between buttons
         alignItems: 'center',
         marginTop: 15,
         paddingHorizontal: 5, // Reduced padding for compactness

@@ -4,14 +4,14 @@ import axios, { AxiosResponse } from 'axios';
 interface RecipeApiParams {
   [key: string]: any;
   query?: string;
-  addRecipeNutrition: boolean;
-  addRecipeInstructions: boolean;
-  fillIngredients: boolean;
+  addRecipeNutrition?: boolean;
+  addRecipeInstructions?: boolean;
+  fillIngredients?: boolean;
+  instructionsRequired?: boolean;
+  sort?: string;
   maxReadyTime?: number;
-  number: number;
-  offset: number;
-  instructionsRequired: boolean;
-  sort: string;
+  number?: number;
+  offset?: number;
   includeIngredients?: string;
   excludeIngredients?: string;
   minProtein?: number;
@@ -27,11 +27,16 @@ interface RecipeApiParams {
 
 class RecipeApi {
   private SEARCH_RECIPE_URL = process.env.EXPO_PUBLIC_SEARCH_RECIPE_URL;
+  private SEARCH_V1 = "search?"
+  private SEARCH_V2 = "search-v2?"
+
   searchRecipes = async (params: RecipeApiParams): Promise<any> => {
+    const url = `${this.SEARCH_RECIPE_URL!}${this.SEARCH_V1}`;
+
     try {
       const transfromedParams = this.transformParms(params);
       console.log(`Fetching recipes with params ${JSON.stringify(transfromedParams)}`);
-      const response: AxiosResponse<any> = await axios.get(this.SEARCH_RECIPE_URL,
+      const response: AxiosResponse<any> = await axios.get(url,
           { 
               params: transfromedParams,
               headers: {
@@ -40,7 +45,28 @@ class RecipeApi {
           });
       return response.data;
     } catch (error) {
-      console.error(`Failed to fetch recipes at ${this.SEARCH_RECIPE_URL} with params ${JSON.stringify(params)}`);
+      console.error(`Failed to fetch recipes at ${url} with params ${JSON.stringify(params)}`);
+      throw error;
+    }
+  };
+
+  searchRecipesV2 = async (params: RecipeApiParams): Promise<any> => {
+    const url = `${this.SEARCH_RECIPE_URL!}${this.SEARCH_V2}`;
+
+    try {
+      const transfromedParams = this.transformParms(params);
+      console.log(`Fetching recipes with params search-v2 ${JSON.stringify(transfromedParams)}`);
+      const response: AxiosResponse<any> = await axios.get(url,
+          { 
+              params: transfromedParams,
+              headers: {
+                  'Content-Type': 'application/json',
+              }
+          });
+      // console.log("response is", response.data);
+      return JSON.parse(response.data);
+    } catch (error) {
+      console.error(`Failed to fetch recipes at ${url} with params ${JSON.stringify(params)}`);
       throw error;
     }
   };

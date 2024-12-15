@@ -6,13 +6,11 @@ import { useEffect, useState } from 'react';
 import RecipeApi from '@/components/RecipeApi';
 import { RecipeInfo } from '@/components/RecipeInfo';
 
-const PAGE_SIZE = 5;
-
 export default function HomeScreen() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [selectedRecipeIndex, setSelectedRecipeIndex] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
-  const [page, setPage] = useState<number>(0);
+  const [page, setPage] = useState<any>();
 
   const recipeApi = new RecipeApi();
   const route = useRoute();
@@ -20,26 +18,23 @@ export default function HomeScreen() {
   
   const fetchRecipes = async (resetPage = false) => {
     if (resetPage) {
-      setPage(0);
+      setPage(null);
     }
     setLoading(true);
     try {
       console.log('Fetching recipes home screen, page:', page);
-      const response = await recipeApi.searchRecipes({
-        addRecipeNutrition: true,
-        addRecipeInstructions: true,
-        fillIngredients: true,
-        number: PAGE_SIZE,
-        offset: resetPage ? 0 : page,
-        instructionsRequired: true,
-        sort: 'popularity',
+      const response = await recipeApi.searchRecipesV2({
+        ...(page !== null && { next: page }),
         ...filters
       });
-      const offset = response.offset;
-      const number = response.number;
-      const newOffset = offset + number;
-      setPage(newOffset);
+      console.log('Type of response:', typeof response);
+
+      const next = response.next;
+      
+      setPage(next);
+      
       const recipes = response.results;
+      console.log('recipes:', response.results);
       setRecipes(recipes);
     } catch (error) {
       console.error('Error fetching recipes:', error);
@@ -57,7 +52,7 @@ export default function HomeScreen() {
       } else {
         return nextIndex;
       }
-    });
+    });    
   };
 
   useEffect(() => {

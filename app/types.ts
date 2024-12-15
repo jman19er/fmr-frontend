@@ -34,8 +34,9 @@ export interface Recipe {
   title: string;
   image: string;
   readyInMinutes: number;
-  aggregateLikes: number;
-  analyzedInstructions: {
+  aggregateLikes?: number;
+  servings: number;
+  analyzedInstructions?: {
     steps: {
       step: string;
     }[];
@@ -46,6 +47,7 @@ export interface Recipe {
       amount: number;
       unit: string;
     }[];
+  nutrients: Nutrient[];
 };
 
 export interface FilterPopoverProps {

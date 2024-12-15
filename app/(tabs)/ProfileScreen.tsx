@@ -1,3 +1,4 @@
+import OpenURLButton from '@/components/OpenUrlButton';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Linking } from 'react-native';
@@ -14,19 +15,23 @@ const ProfileScreen = () => {
       { title: 'Terms of Service', icon: 'file-text', url: 'https://publish.mvphome.pro/site/2wrye4aq903z2csvmqpvnh429sc7tw0/terms' },
       { title: 'Support', icon: 'envelope', url: 'mailto:macromatch.dev@gmail.com' },
     ];
-  
-    const openLink = (url: string) => {
-      Linking.openURL(url).catch((err) => console.error("Couldn't load page", err));
-    };
+
   
     return (
       <View style={styles.container}>
         <View style={styles.linkContainer}>
           {links.map((link: Link, index: number) => (
-            <TouchableOpacity key={index} style={styles.card} onPress={() => openLink(link.url)}>
-              <FontAwesome name={link.icon} size={24} color="#007AFF" />
-              <Text style={styles.linkText}>{link.title}</Text>
-            </TouchableOpacity>
+            <OpenURLButton 
+            key={index}
+              url={link.url} 
+              children={
+                <View style={styles.card}>
+                  <FontAwesome name={link.icon} size={24} color="#FF5A5F" />
+                  <Text style={styles.linkText}>{link.title}</Text>
+                </View>
+              }
+            />
+
           ))}
         </View>
       </View>
@@ -64,8 +69,9 @@ const ProfileScreen = () => {
     linkText: {
       fontSize: 18,
       marginLeft: 10,
-      color: '#007AFF',
+      color: '#FF5A5F',
       fontWeight: '500',
+      
     },
   });
   

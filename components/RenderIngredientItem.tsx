@@ -6,7 +6,7 @@ export const renderIngredientItem = (ingredient: Ingredient, checked: boolean, t
   <View style={styles.container}>
     <CheckBox value={checked} onValueChange={toggleCheckbox} />
     <Text style={[styles.item, checked && styles.checkedItem]}>
-      [ {ingredient.amount.toFixed(2)} {ingredient.unit}] {ingredient.originalName}
+      {ingredient.originalName}
     </Text>
   </View>
 );
