@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { useAppContext } from '@/components/AppContext';
 import { Recipe } from '../types';
@@ -18,9 +18,8 @@ const SavedScreen = () => {
   );
 
   const renderItem = ({ item }: { item: Recipe }) => (
-    <Swipeable renderRightActions={() => renderRightActions(item.id)}>
+    <Swipeable renderRightActions={() => renderRightActions(item.title)}>
       <TouchableOpacity style={styles.recipeItem} onPress={() => navigation.navigate('RecipeInfoScreen', { recipe: item })}>
-        <Image source={{ uri: item.image }} style={styles.savedRecipeThumbnail} />
         <Text style={styles.recipeTitle}>{item.title}</Text>
       </TouchableOpacity>
     </Swipeable>
@@ -41,7 +40,7 @@ const SavedScreen = () => {
       <FlatList
         data={savedRecipes}
         renderItem={renderItem}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item.title}
       />
     </View>
   );

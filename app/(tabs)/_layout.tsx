@@ -2,7 +2,6 @@ import { Tabs } from 'expo-router';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useAppContext } from '@/components/AppContext';
 import { View, Text, StyleSheet } from 'react-native';
-import { useEffect } from 'react';
 
 export default function TabsLayout() {
   const { notification } = useAppContext();
@@ -17,10 +16,6 @@ export default function TabsLayout() {
       )}
     </View>
   );
-
-  useEffect(() => {
-    console.log('Notification value: ', notification);
-  }, [notification]);
 
   return (
     <Tabs>

@@ -5,17 +5,11 @@ export type RootStackParamList = {
   };
 
 export interface Ingredient {
-  id: number;
   name: string;
   amount: number;
   unit: string;
-  originalName: string;
 }
 
-export interface Step {
-  step: string;
-}
-  
 export interface Nutrition {
   nutrients: Nutrient[];
   ingredients: Ingredient[];
@@ -25,29 +19,23 @@ export interface Nutrient {
   name: string;
   amount: number;
   unit: string;
-  percentOfDailyNeeds: number;
+  percentOfDailyNeeds?: number;
 }
 export interface Recipe {
-  sourceUrl: string;
-  extendedIngredients: any;
-  id: string;
-  title: string;
-  image: string;
-  readyInMinutes: number;
-  aggregateLikes?: number;
-  servings: number;
-  analyzedInstructions?: {
-    steps: {
-      step: string;
-    }[];
+  calories?: number;
+  description?: string;
+  sourceUrl?: string;
+  extendedIngredients: {
+    name: string;
+    amount: number;
+    unit: string;
   }[];
-  nutrition: Nutrition;
-    ingredients: {
-      name: string;
-      amount: number;
-      unit: string;
-    }[];
-  nutrients: Nutrient[];
+  title: string;
+  readyInMinutes: number;
+  flavorRating: number;
+  servings: number;
+  instructions?: string[];
+  macroNutrients: Nutrient[];
 };
 
 export interface FilterPopoverProps {

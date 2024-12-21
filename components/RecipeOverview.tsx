@@ -1,105 +1,55 @@
 import { Nutrient, Recipe } from '@/app/types';
-import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet, Share, TouchableOpacity, Linking } from 'react-native';
-import Animated, { RotateInUpLeft, RotateOutDownRight } from 'react-native-reanimated';
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { SaveRecipe } from './SaveRecipe';
 
 interface RecipeOverviewProps {
     recipe: Recipe;
 }
 
 const RecipeOverview: React.FC<RecipeOverviewProps> = ({ recipe }) => {
-    const [aspectRatio, setAspectRatio] = useState<number | null>(null);
 
-    useEffect(() => {
-        Image.getSize(recipe.image, (width, height) => {
-            setAspectRatio(width / height);
-        });
-    }, [recipe.image]);
 
     const findNutrient = (nutrients: Nutrient[], nutrient: string) => {
         return nutrients.find((n) => n.name === nutrient);
     };
 
-    const handleShare = async () => {
-        try {
-            await Share.share({
-                message: `Check out this recipe: ${recipe.title}\n${recipe.sourceUrl}`,
-            });
-        } catch (error) {
-            console.error('Error sharing the recipe:', error);
-        }
-    };
-
-    const saveToPinterest = () => {
-        const pinterestUrl = `https://www.pinterest.com/pin/create/button/?url=${encodeURIComponent(
-            recipe.sourceUrl
-        )}&media=${encodeURIComponent(recipe.image)}&description=${encodeURIComponent(recipe.title)}`;
-        Linking.openURL(pinterestUrl).catch((err) => 
-            console.error('Error opening Pinterest URL:', err)
-        );
-    };
-
     return (
         <View style={styles.card}>
-            <Text style={styles.heading}>At a Glance</Text>
-
-            <View style={styles.topSection}>
-                {aspectRatio && (
-                    <Animated.Image
-                        style={[styles.image, { aspectRatio }]}
-                        source={{ uri: recipe.image }}
-                        resizeMode="cover"
-                        entering={RotateInUpLeft} // Rotate in from the top-left
-                        exiting={RotateOutDownRight} // Rotate out to the bottom-right
-            
-                    />
-                )}
-            </View>
+            <Text style={styles.title}>{recipe.title}</Text>
+            <Text style={styles.description}>{recipe.description}</Text>
             <View style={styles.bottomSection}>
-                <Text style={styles.title}>{recipe.title}</Text>
-                    <View style={styles.infoRows}>
-                        <View style={styles.iconContainer}>
-                            <Icon name="time-outline" size={20} color="#000" />
-                            <Text style={styles.text}> {recipe.readyInMinutes} minutes</Text>
-                        </View>
-                        <View style={styles.iconContainer}>
-                            <Icon name="flash" size={20} color="#000" />
-                            <Text style={styles.text}> {Math.floor(findNutrient(recipe.nutrients, "Energy")!.amount)} calories</Text>
-                        </View>
-                        {
-                            recipe.servings && (
-                                <View style={styles.iconContainer}>
-                                <Icon name="person" size={20} color="#000"/>
+                <View style={styles.infoRows}>
+                    <View style={styles.iconContainer}>
+                        <Icon name="time-outline" size={20} color="#000" />
+                        <Text style={styles.text}> {recipe.readyInMinutes === 0 ? '?' : recipe.readyInMinutes} minutes</Text>
+                    </View>
+                    <View style={styles.iconContainer}>
+                        <Icon name="flash" size={20} color="#000" />
+                        <Text style={styles.text}> {Math.floor(recipe.calories ?? 0)} calories</Text>
+                    </View>
+                    {
+                        recipe.servings && (
+                            <View style={styles.iconContainer}>
+                                <Icon name="person" size={20} color="#000" />
                                 <Text style={styles.text}> {recipe.servings} servings</Text>
                             </View>
-                            )
-                        }
+                        )
+                    }
 
-                        <View style={styles.iconContainer}>
-                            <Icon name="flash" size={20} color="#000" />
-                            <Text style={styles.text}> {Math.floor(findNutrient(recipe.nutrients, "Fat")!.amount)}{findNutrient(recipe.nutrients, "Fat")!.unit} fat</Text>
-                        </View>
-                        <View style={styles.iconContainer}>
-                            <Icon name="flash" size={20} color="#000" />
-                            <Text style={styles.text}> {Math.floor(findNutrient(recipe.nutrients, "Carbs")!.amount)}{findNutrient(recipe.nutrients, "Carbs")!.unit} carbs</Text>
-                        </View>
-                        <View style={styles.iconContainer}>
-                            <Icon name="flash" size={20} color="#000" />
-                            <Text style={styles.text}> {Math.floor(findNutrient(recipe.nutrients, "Protein")!.amount)}{findNutrient(recipe.nutrients, "Protein")!.unit} protein</Text>
-                        </View>
+                    <View style={styles.iconContainer}>
+                        <Icon name="flash" size={20} color="#000" />
+                        <Text style={styles.text}> {Math.floor(findNutrient(recipe.macroNutrients, "Fat")!.amount)}{findNutrient(recipe.macroNutrients, "Fat")!.unit} fat</Text>
                     </View>
-                    <View style={styles.actionRow}>
-                        <TouchableOpacity style={styles.actionButton} onPress={handleShare}>
-                            <Icon name="share-social-outline" size={28} color="#1e90ff" />
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.pinterestButton} onPress={saveToPinterest}>
-                            <Icon name="logo-pinterest" size={28} color="#E60023" />
-                        </TouchableOpacity>
-                        <SaveRecipe recipe={recipe} />
+                    <View style={styles.iconContainer}>
+                        <Icon name="flash" size={20} color="#000" />
+                        <Text style={styles.text}> {Math.floor(findNutrient(recipe.macroNutrients, "Carbs")!.amount)}{findNutrient(recipe.macroNutrients, "Carbs")!.unit} carbs</Text>
                     </View>
-            
+                    <View style={styles.iconContainer}>
+                        <Icon name="flash" size={20} color="#000" />
+                        <Text style={styles.text}> {Math.floor(findNutrient(recipe.macroNutrients, "Protein")!.amount)}{findNutrient(recipe.macroNutrients, "Protein")!.unit} protein</Text>
+                    </View>
+                </View>
             </View>
         </View>
     );
@@ -130,6 +80,13 @@ const styles = StyleSheet.create({
     title: {
         textAlign: 'center',
         fontSize: 18,
+        fontWeight: 'bold',
+        paddingBottom: 10,
+    },
+    description: {
+        textAlign: 'center',
+        fontSize: 14,
+        color: '#666',
     },
     infoRows: {
         flexDirection: 'row',

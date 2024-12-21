@@ -11,7 +11,7 @@ export const SaveRecipe = ({ recipe }: { recipe: Recipe }) => {
     const [isSaved, setIsSaved] = useState<boolean>(false);
     const handleToggleRecipe = (recipe: Recipe) => {
         if (isSaved) {
-            deleteRecipe(recipe.id);
+            deleteRecipe(recipe.title);
         } else {
             addRecipe(recipe);
         }
@@ -19,16 +19,16 @@ export const SaveRecipe = ({ recipe }: { recipe: Recipe }) => {
     };
 
     useEffect(() => {
-        setIsSaved(isRecipeSaved(recipe.id));
+        setIsSaved(isRecipeSaved(recipe.title));
     });
 
     return (
             <TouchableOpacity
                 onPress={() => handleToggleRecipe(recipe)}
-                style={styles.saveRecipeButton}
+                style={[styles.saveRecipeButton]}
             >
                 <FontAwesome 
-                    size={28}
+                    size={30}
                     name={isSaved ? 'heart' : 'heart-o' } // 'heart-o' for outlined, 'heart' for filled
                     color="#d9534f"
                  />
@@ -40,14 +40,15 @@ const styles = StyleSheet.create({
     saveRecipeButton: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingVertical: 8,
-        paddingHorizontal: 5,
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.1,
         shadowRadius: 2,
-        margin: 5,
+        width: 60, // Button diameter
+        height: 60, // Button diameter
+        borderRadius: 30, // Half the width/height for a perfect circle
+        backgroundColor: '#FFF', // Button background color
+        justifyContent: 'center', // Center the icon inside the button
     },
-
     saveForLaterText: {
         color: '#fff',
         fontSize: 18,

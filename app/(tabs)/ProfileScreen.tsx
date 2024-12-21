@@ -1,7 +1,7 @@
 import OpenURLButton from '@/components/OpenUrlButton';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Linking } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 
 interface Link {
     title: string;

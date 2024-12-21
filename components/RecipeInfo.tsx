@@ -1,23 +1,28 @@
 import { ScrollView } from "react-native-gesture-handler";
-import { Linking, StyleSheet, Text, View } from 'react-native';
-import Animated, { SlideInLeft, SlideInRight, SlideOutRight } from "react-native-reanimated";
+import { StyleSheet } from 'react-native';
+import Animated, { runOnJS, SlideInLeft, SlideOutRight } from "react-native-reanimated";
 import RecipeOverview from "./RecipeOverview";
 import { CheckList } from "./CheckList";
 import { renderIngredientItem } from "./RenderIngredientItem";
 import { Recipe } from "@/app/types";
-import OpenUrlButton from "./OpenUrlButton";
+import { renderStepItem } from "./RenderStepItem";
 
-export const RecipeInfo = ({ recipe }: { recipe: Recipe }) => {
+
+export const RecipeInfo = ({ recipe, onExit }: { recipe: Recipe, onExit: () => void }) => {
     const ingredients = recipe?.extendedIngredients || [];
-    
+    const instructions = recipe?.instructions || [];
     return (
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
             {/* Section 1 */}
             <Animated.View 
                 entering={SlideInLeft} 
-                exiting={SlideOutRight} 
+                exiting={SlideOutRight.withCallback((finished) => {
+                    if (finished) {
+                        runOnJS(onExit)(); // Notify parent when animation finishes
+                    }
+                })} 
                 style={styles.card} 
-                key={`recipe-overview-${recipe.id}`} // Unique key for re-rendering
+                key={`recipe-overview-${recipe.title}`}
             >
                 <RecipeOverview recipe={recipe} />
             </Animated.View>
@@ -28,30 +33,22 @@ export const RecipeInfo = ({ recipe }: { recipe: Recipe }) => {
                     entering={SlideInLeft} 
                     exiting={SlideOutRight} 
                     style={styles.card} 
-                    key={`ingredients-${recipe.id}`} // Unique key for re-rendering
+                    key={`ingredients-${recipe.title}`}
                 >                    
                     <CheckList items={ingredients} renderItem={renderIngredientItem} heading="Ingredients" />
                 </Animated.View>
             }
-            <Animated.View 
-                entering={SlideInLeft} 
-                exiting={SlideOutRight} 
-                style={styles.card} 
-                key={`instructions-${recipe.id}`} // Unique key for re-rendering
-            >                    
-            <Text style={styles.heading}>Instructions</Text>
-            <OpenUrlButton 
-                url={recipe.sourceUrl}
-                children={
-                    <View style={styles.linkButtonContainer}>
-                    <Text style={styles.linkButtonText}>
-                      <Text style={styles.icon}>📖 </Text>
-                      Open Full Instructions
-                    </Text>
-                  </View>
-                }
-            />
-        </Animated.View>
+            { instructions.length > 0 &&
+                <Animated.View 
+                    entering={SlideInLeft} 
+                    exiting={SlideOutRight} 
+                    style={styles.card} 
+                    key={`instructions-${recipe.title}`}
+                >                    
+                <CheckList items={instructions} renderItem={renderStepItem} heading="Instructions" />
+
+                </Animated.View>
+            }
             
         </ScrollView>
     );

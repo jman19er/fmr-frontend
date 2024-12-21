@@ -22,7 +22,7 @@ interface RecipeApiParams {
   maxFat?: number;
   minCalories?: number;
   maxCalories?: number;
-
+  seenRecipes?: string[];
 }
 
 class RecipeApi {
@@ -63,7 +63,6 @@ class RecipeApi {
                   'Content-Type': 'application/json',
               }
           });
-      // console.log("response is", response.data);
       return JSON.parse(response.data);
     } catch (error) {
       console.error(`Failed to fetch recipes at ${url} with params ${JSON.stringify(params)}`);

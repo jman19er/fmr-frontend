@@ -33,7 +33,6 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   // Function to save data to AsyncStorage
   const saveRecipesToStorage = async (recipes: Recipe[]) => {
     try {
-      console.log('Updating recipes in AsyncStorage');
       await AsyncStorage.setItem('savedRecipes', JSON.stringify(recipes));
     } catch (error) {
       console.error('Failed to update recipes', error);
@@ -42,21 +41,21 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
   // Function to add a new recipe
   const addRecipe = (newRecipe: Recipe) => {
-    const updatedRecipes = [...savedRecipes.filter(recipe => recipe.id != newRecipe.id), newRecipe];
+    const updatedRecipes = [...savedRecipes.filter(recipe => recipe.title != newRecipe.title), newRecipe];
     setSavedRecipes(updatedRecipes);
     setNotification(true);
     saveRecipesToStorage(updatedRecipes);
   };
 
   // Function to delete a recipe
-  const deleteRecipe = (id: string) => {
-    const updatedRecipes = savedRecipes.filter(recipe => recipe.id != id);
+  const deleteRecipe = (title: string) => {
+    const updatedRecipes = savedRecipes.filter(recipe => recipe.title != title);
     setSavedRecipes(updatedRecipes);
     saveRecipesToStorage(updatedRecipes);
   };
 
-  const isRecipeSaved = (id: string) => {
-    return savedRecipes.some(recipe => recipe.id === id);
+  const isRecipeSaved = (title: string) => {
+    return savedRecipes.some(recipe => recipe.title === title);
   }
 
   const clearNotification = () => {

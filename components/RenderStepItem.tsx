@@ -1,13 +1,12 @@
-import { Step } from "@/app/types";
 import CheckBox from "expo-checkbox";
 import { Text, StyleSheet, View } from 'react-native';
 
-export const renderStepItem = (step: Step, checked: boolean, toggleCheckbox: () => void) => (
+export const renderStepItem = (step: string, checked: boolean, toggleCheckbox: () => void) => (
     <View style={styles.container}>
 
       <CheckBox value={checked} onValueChange={toggleCheckbox} />
       <Text style={[styles.item, checked && styles.checkedItem]}>
-        {step.step}
+        {step}
       </Text>
     </View>
   );
