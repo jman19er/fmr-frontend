@@ -2,23 +2,28 @@ import { Tabs } from 'expo-router';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useAppContext } from '@/components/AppContext';
 import { View, Text, StyleSheet } from 'react-native';
+import { Badge } from 'react-native-paper';
 
 export default function TabsLayout() {
   const { notification } = useAppContext();
 
   const SavedTabIcon = ({ color }: { color: string }) => (
     <View style={styles.tabIconWrapper}>
-      <FontAwesome size={25} name="heart" color={color} />
+      <FontAwesome size={25} name="bookmark" color={color} />
       {notification && (
         <View style={styles.badge}>
-          <Text style={styles.badgeText}>New</Text>
+          <Badge size={10} />
         </View>
       )}
     </View>
   );
 
   return (
-    <Tabs>
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: '#FF5A5F',
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
@@ -66,22 +71,8 @@ const styles = StyleSheet.create({
   },
   badge: {
     position: 'absolute',
-    top: -6, // Slightly above the icon
-    right: -6, // Slightly to the right
-    backgroundColor: '#ff4d4d', // Modern red color
-    borderRadius: 12, // Fully rounded
-    paddingHorizontal: 5, // Adjust for sleekness
-    paddingVertical: 2, // Adjust for sleekness
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    elevation: 4, // Android shadow
-  },
-  badgeText: {
-    color: 'white',
-    fontSize: 10,
-    fontWeight: '600', // Semi-bold for modern look
-    textTransform: 'uppercase', // Uppercase for sleek style
+    top: 6, // Slightly above the icon
+    right: 6, // Slightly to the right
+
   },
 });

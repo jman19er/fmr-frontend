@@ -8,7 +8,7 @@
       "developmentClient": true,
       "distribution": "internal",
       "env": {
-        "EXPO_PUBLIC_SEARCH_RECIPE_URL": "https://8xsda2kbj1.execute-api.us-east-1.amazonaws.com/default/search?"
+        "EXPO_PUBLIC_SEARCH_RECIPE_URL": "https://8xsda2kbj1.execute-api.us-east-1.amazonaws.com/default/"
       }
     },
     "preview": {
@@ -17,7 +17,7 @@
     "production": {
       "autoIncrement": true,
       "env": {
-        "EXPO_PUBLIC_SEARCH_RECIPE_URL": "https://8xsda2kbj1.execute-api.us-east-1.amazonaws.com/default/search?"
+        "EXPO_PUBLIC_SEARCH_RECIPE_URL": "https://8xsda2kbj1.execute-api.us-east-1.amazonaws.com/default/"
       }
     }
   },

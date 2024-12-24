@@ -1,14 +1,14 @@
 import { ScrollView } from "react-native-gesture-handler";
 import { StyleSheet } from 'react-native';
-import Animated, { runOnJS, SlideInLeft, SlideOutRight } from "react-native-reanimated";
+import Animated, { SlideInLeft, SlideOutRight } from "react-native-reanimated";
 import RecipeOverview from "./RecipeOverview";
 import { CheckList } from "./CheckList";
 import { renderIngredientItem } from "./RenderIngredientItem";
 import { Recipe } from "@/app/types";
 import { renderStepItem } from "./RenderStepItem";
+import { IngredientList } from "./IngredientList";
 
-
-export const RecipeInfo = ({ recipe, onExit }: { recipe: Recipe, onExit: () => void }) => {
+export const RecipeInfo = ({ recipe }: { recipe: Recipe }) => {
     const ingredients = recipe?.extendedIngredients || [];
     const instructions = recipe?.instructions || [];
     return (
@@ -16,11 +16,7 @@ export const RecipeInfo = ({ recipe, onExit }: { recipe: Recipe, onExit: () => v
             {/* Section 1 */}
             <Animated.View 
                 entering={SlideInLeft} 
-                exiting={SlideOutRight.withCallback((finished) => {
-                    if (finished) {
-                        runOnJS(onExit)(); // Notify parent when animation finishes
-                    }
-                })} 
+                exiting={SlideOutRight} 
                 style={styles.card} 
                 key={`recipe-overview-${recipe.title}`}
             >
@@ -35,7 +31,7 @@ export const RecipeInfo = ({ recipe, onExit }: { recipe: Recipe, onExit: () => v
                     style={styles.card} 
                     key={`ingredients-${recipe.title}`}
                 >                    
-                    <CheckList items={ingredients} renderItem={renderIngredientItem} heading="Ingredients" />
+                    <IngredientList items={ingredients} recipe={recipe} renderItem={renderIngredientItem} heading="Ingredients" />
                 </Animated.View>
             }
             { instructions.length > 0 &&
@@ -49,7 +45,6 @@ export const RecipeInfo = ({ recipe, onExit }: { recipe: Recipe, onExit: () => v
 
                 </Animated.View>
             }
-            
         </ScrollView>
     );
 }

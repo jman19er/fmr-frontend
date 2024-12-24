@@ -1,37 +1,35 @@
 import 'react-native-gesture-handler';
 import { Text, StyleSheet, SafeAreaView, TouchableOpacity, View } from 'react-native';
 import { useRoute } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/Ionicons';
 import { Filters, Recipe } from '../types';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import RecipeApi from '@/components/RecipeApi';
 import { RecipeInfo } from '@/components/RecipeInfo';
-import { SaveRecipe } from '@/components/SaveRecipe';
 import LoadingScreen from '../LoadingScreen';
+import IntroScreen from '@/components/IntroScreen';
 
 export default function HomeScreen() {
-  const [recipes, setRecipes] = useState<Recipe[]>([{'description': 'Succulent Italian Chicken Instant Pot', 'extendedIngredients': [{'name': 'chicken breast', 'amount': 1.5, 'unit': 'pounds'}, {'name': 'low-sodium chicken broth', 'amount': 1, 'unit': 'cup'}, {'name': 'garlic powder', 'amount': 1, 'unit': 'teaspoon'}, {'name': 'Italian seasoning', 'amount': 1, 'unit': 'tablespoon'}, {'name': 'salt', 'amount': 0.5, 'unit': 'teaspoon'}, {'name': 'black pepper', 'amount': 0.25, 'unit': 'teaspoon'}], 'instructions': ['Place chicken breasts in the Instant Pot.', 'Sprinkle garlic powder, Italian seasoning, salt, and pepper over the chicken.', 'Pour chicken broth around the chicken breasts.', 'Close the lid and set valve to sealing position.', 'Cook on Manual/Pressure Cook (high) for 10 minutes.', 'Allow natural pressure release for 5 minutes, then quick release remaining pressure.', 'Check internal temperature reaches 165°F (74°C).', 'Let rest for 5 minutes before slicing.'], 'title': 'Instant Pot Italian Chicken Breast', 'readyInMinutes': 10, 'macroNutrients': [{'name': 'Protein', 'amount': 35, 'unit': 'g'}, {'name': 'Carbs', 'amount': 2, 'unit': 'g'}, {'name': 'Fat', 'amount': 8, 'unit': 'g'}], 'flavorRating': 7, 'servings': 4, 'calories': 220}]);
+  const [recipes, setRecipes] = useState<Recipe[] | undefined>(undefined);
   const [seenRecipes, setSeenRecipes] = useState<string[]>([]);
   const [selectedRecipeIndex, setSelectedRecipeIndex] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [page, setPage] = useState<any>();
   const [error, setError] = useState<string | null>(null);
-  const [slidingOut, setSlidingOut] = useState(false);
-
+  const [hasFetched, setHasFetched] = useState(false);
+  const isFirstRender = useRef(true);
   const recipeApi = new RecipeApi();
   const route = useRoute();
   const { filters } = route.params as { filters?: Filters } || {};
 
-  const handleAnimationEnd = () => {
-    setSlidingOut(false); // Reset sliding state
-    setLoading(true); // Show loading screen
-};
-
   const fetchRecipes = async (resetPage = false) => {
+    // user has attempted fetch
+    // Wait for slide-out animation to *start* (e.g. ~300ms), then show loading
+    setLoading(true);
+    setHasFetched(true);
+    setError(null);
     if (resetPage) {
       setPage(null);
     }
-    setSlidingOut(true);
     try {
       const response = await recipeApi.searchRecipesV2({
         ...(page !== null && { next: page }),
@@ -44,6 +42,12 @@ export default function HomeScreen() {
       setPage(next);
       
       const recipes = response.results;
+      if (!recipes || recipes.length === 0) {
+        setError('No recipes found');
+        setRecipes([]);
+        return; 
+      }
+
       setSeenRecipes((prev) => {
         const newRecipes = recipes.filter((recipe: Recipe) => !prev.includes(recipe.title));
         return [...prev, ...newRecipes.map((recipe: Recipe) => recipe.title)];
@@ -59,35 +63,61 @@ export default function HomeScreen() {
   };
 
   const findNewRecipe = () => {
-    setSelectedRecipeIndex((prevIndex) => {
-      const nextIndex = prevIndex + 1;
-      if (nextIndex >= recipes.length) {
-        fetchRecipes();
-        return 0;
-      } else {
-        return nextIndex;
-      }
-    });    
+    // If we don't have any recipes yet or we are at the end of the array:
+    if (!recipes || selectedRecipeIndex + 1 >= recipes.length) {
+      // This will call fetchRecipes (which sets hasFetched = true, sets loading = true, etc.)
+      fetchRecipes();
+      // Reset selected index
+      setSelectedRecipeIndex(0);
+    } else {
+      // Just increment to the next recipe in the array
+      setSelectedRecipeIndex((prevIndex) => prevIndex + 1);
+    }
   };
 
+  // Only re-fetch if filters changed, ignoring the very first render
   useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    // If filters changed, we want to reset page and refetch
     fetchRecipes(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters]);
 
-  const recipe = recipes && selectedRecipeIndex >= 0 && selectedRecipeIndex < recipes.length ? recipes[selectedRecipeIndex] : null;
-  
-  if (loading) {
+  const recipe = 
+    recipes && 
+    selectedRecipeIndex >= 0 && 
+    selectedRecipeIndex < recipes.length 
+      ? recipes[selectedRecipeIndex] 
+      : null;
+        
+  // 1. If we haven't fetched anything yet, show the landing page
+  if (!hasFetched) {
     return (
-      <LoadingScreen />
+      <IntroScreen findNewRecipe={findNewRecipe} />
     );
   }
+
+  // 2. If we’re loading, show a spinner or loading screen
+  if (loading) {
+    return <LoadingScreen />;
+  }
+
+  // 3. If we have an error or no valid `recipe`, show the error screen
   if (error || !recipe) {
     return (
       <SafeAreaView style={styles.container}>
-        <Text style={styles.title}>Sorry, we couldn't find any recipes matching those filters at this time. Please change your filters. If the problem persists, please try again later.</Text>
+        <Text style={styles.title}>
+          {error 
+            ? error 
+            : "Sorry, we couldn't find any recipes matching those filters at this time."
+          }
+        </Text>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.findNewRecipe} onPress={() => findNewRecipe()}>
-            <Text>Next Recipe</Text>
+          <TouchableOpacity style={styles.findNewRecipe} onPress={findNewRecipe}>
+            <Text style={styles.findNewRecipeText}>Next Recipe</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -96,21 +126,12 @@ export default function HomeScreen() {
   return (
 
     <SafeAreaView style={styles.container}>
-        {!slidingOut && (
-            <RecipeInfo recipe={recipe} onExit={handleAnimationEnd} />
-        )}      
+        <RecipeInfo recipe={recipe}/>
         <View style={styles.bottomRowContainer}>
-        <TouchableOpacity
-          style={[styles.circularButton, styles.bottomRight]}
-          onPress={() => findNewRecipe()}
-        >
-          <Icon name="arrow-forward" size={30} color="#FF5A5F" />
-        </TouchableOpacity>
-        <View style={[styles.circularButton, styles.bottomLeft]}>
-          <SaveRecipe recipe={recipe} />
-        </View>
+        <TouchableOpacity style={styles.findNewRecipe} onPress={() => findNewRecipe()}>
+            <Text style={styles.findNewRecipeText}>Next Recipe</Text>
+          </TouchableOpacity>
       </View>
-
     </SafeAreaView>
   );
 }
@@ -129,9 +150,8 @@ const styles = StyleSheet.create({
     zIndex: 10, // Ensure the buttons are above other content
     backgroundColor: 'transparent', // Remove any background color
     flexDirection: 'row', // Align buttons horizontally
-    justifyContent: 'space-between', // Space buttons to the edges
+    justifyContent: 'center', // Space buttons to the edges
     paddingHorizontal: 10, // Add spacing on sides
-    paddingBottom: 10, // Adjust spacing from the bottom
   },
   buttonContainer: {
     flexDirection: 'column',
@@ -140,8 +160,6 @@ const styles = StyleSheet.create({
   title: {
     textAlign: 'center',
     padding: 10,
-    fontSize: 24,
-    fontWeight: 'bold',
     marginBottom: 10,
   },
   findNewRecipe: {

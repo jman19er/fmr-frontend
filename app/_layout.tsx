@@ -4,13 +4,23 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import FilterPopover from '@/components/FilterPopover';
 import React, { useState } from 'react';
 import { Filters } from './types';
-import Icon from 'react-native-vector-icons/Ionicons';
-import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
+import { TouchableOpacity, StyleSheet } from 'react-native';
+import { DefaultTheme, PaperProvider } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import * as SplashScreen from 'expo-splash-screen';
+import FilterIcon from '@/components/FilterIcon';
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
+
+const theme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: '#FF5A5F',
+  },
+};
+
 
 
 export default function Layout() {
@@ -26,32 +36,32 @@ export default function Layout() {
   return (
     <GestureHandlerRootView>
       <AppProvider>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{
-            headerTitle: 'MacroMatch', // Hide the title next to the back arrow
-            headerRight: () => (
-              <TouchableOpacity
-              style={styles.filterContainer}
-              onPress={() => setFilterVisible(true)}
-            >
-              <View style={styles.iconTextWrapper}>
-                <Icon name="filter-outline" size={24} color="#000" />
-                <Text style={styles.filterText}>Filters</Text>
-              </View>
-            </TouchableOpacity>            ),
+        <PaperProvider theme={theme}>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{
+              headerTitle: 'MacroMatch',
+              headerRight: () => (
+                <TouchableOpacity
+                  style={styles.filterContainer}
+                  onPress={() => setFilterVisible(true)}
+                >
+                  <FilterIcon size={24}/>
+                </TouchableOpacity>),
             }}
-            initialParams={{ filters }}
+              initialParams={{ filters }}
+            />
+            <Stack.Screen name="RecipeInfoScreen" options={{
+              headerTitle: 'MacroMatch',
+              headerBackTitleVisible: false, // Hide the title next to the back arrow
+            }} />
+          </Stack>
+          <FilterPopover
+            visible={filterVisible}
+            onClose={() => setFilterVisible(false)}
+            onApply={handleApplyFilters}
           />
-          <Stack.Screen name="RecipeInfoScreen" options={{
-            headerTitle: 'MacroMatch',
-            headerBackTitleVisible: false, // Hide the title next to the back arrow
-          }} />
-        </Stack>
-        <FilterPopover
-          visible={filterVisible}
-          onClose={() => setFilterVisible(false)}
-          onApply={handleApplyFilters}
-        />
+        </PaperProvider>
+
       </AppProvider>
     </GestureHandlerRootView>
   );
@@ -59,17 +69,5 @@ export default function Layout() {
 const styles = StyleSheet.create({
   filterContainer: {
     marginRight: 10, // Add space from the edge of the screen
-  },
-  iconTextWrapper: {
-    flexDirection: 'column', // Icon and text aligned horizontally
-    alignItems: 'center', // Center them vertically
-  },
-  filterText: {
-    marginLeft: 4, // Space between icon and text
-    fontSize: 12, // Modern, small font size
-    color: '#555', // Subtle, neutral color
-    fontWeight: '300', // Light font for a sleek look
-    letterSpacing: 0.5, // Slight spacing for a modern touch
-    textTransform: 'capitalize', // Text looks polished and clean
-  },
+  }
 });

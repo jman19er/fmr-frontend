@@ -2,6 +2,8 @@ import { Nutrient, Recipe } from '@/app/types';
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { SaveRecipe } from './SaveRecipe';
+import { TryLaterButton } from './TryLaterButton';
 
 interface RecipeOverviewProps {
     recipe: Recipe;
@@ -50,6 +52,10 @@ const RecipeOverview: React.FC<RecipeOverviewProps> = ({ recipe }) => {
                         <Text style={styles.text}> {Math.floor(findNutrient(recipe.macroNutrients, "Protein")!.amount)}{findNutrient(recipe.macroNutrients, "Protein")!.unit} protein</Text>
                     </View>
                 </View>
+                <View style={styles.saveRow}>
+                    <SaveRecipe recipe={recipe} />
+                    <TryLaterButton recipe={recipe} />
+                </View>
             </View>
         </View>
     );
@@ -93,6 +99,12 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap', // Allows wrapping to the next row
         justifyContent: 'space-evenly', // Space between icons
         marginTop: 5,
+    },
+    saveRow: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 10,
     },
     iconContainer: {
         justifyContent: 'center',

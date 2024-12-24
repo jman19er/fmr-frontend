@@ -1,6 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
 
-
 interface RecipeApiParams {
   [key: string]: any;
   query?: string;

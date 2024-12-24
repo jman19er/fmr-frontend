@@ -1,6 +1,8 @@
 import { FilterPopoverProps } from '@/app/types';
 import React, { useState } from 'react';
 import { View, Text, Button, Modal, StyleSheet, TextInput, ScrollView } from 'react-native';
+import MultiTextInput from './MultiTextInput';
+import RadioButtonGroup from './RadioButtonGroup';
 
 const FilterPopover = ({ visible, onClose, onApply }: FilterPopoverProps) => {
     const [query, setQuery] = useState<string | undefined>();
@@ -16,6 +18,16 @@ const FilterPopover = ({ visible, onClose, onApply }: FilterPopoverProps) => {
     const [minIngredients, setMinIngredients] = useState<number | undefined>();
     const [maxIngredients, setMaxIngredients] = useState<number | undefined>();
     const [error, setError] = useState<string | null>(null);
+    // single select / radio buttons?
+    const [cuisine, setCuisine] = useState<string>('Any');
+    const [diet, setDiet] = useState<string>('Any');
+    const [mealType, setMealType] = useState<string>('Any');
+
+    // multi select
+    const [includeIngredients, setIncludeIngredients] = useState<string[] | undefined>();
+    const [excludeIngredients, setExcludeIngredients] = useState<string[] | undefined>();
+    const [includesEquipment, setIncludesEquipment] = useState<string[] | undefined>();
+    const [excludesEquipment, setExcludesEquipment] = useState<string[] | undefined>();
 
     const handleApply = () => {
         // Validate numeric inputs
@@ -169,6 +181,68 @@ const FilterPopover = ({ visible, onClose, onApply }: FilterPopoverProps) => {
                                 onChangeText={(text) => setMaxCalories(validateNumericInput(text))}
                             />
                         </View>
+                        <MultiTextInput 
+                            placeholder='Include Ingredients'
+                            values={includeIngredients || []}
+                            onChange={setIncludeIngredients}
+                        />
+                        <MultiTextInput 
+                            placeholder='Exclude Ingredients'
+                            values={excludeIngredients || []}
+                            onChange={setExcludeIngredients}
+                        />
+                        <MultiTextInput 
+                            placeholder='Include Equipment'
+                            values={includesEquipment || []}
+                            onChange={setIncludesEquipment}
+                        />
+                        <MultiTextInput 
+                            placeholder='Exclude Equipment'
+                            values={excludesEquipment || []}
+                            onChange={setExcludesEquipment} 
+                        />
+                        <RadioButtonGroup 
+                            header="Meal Type"
+                            options={[
+                                'Any',
+                                'Breakfast',
+                                'Brunch',
+                                'Lunch',
+                                'Dinner',
+                                'Snack',
+                            ]}
+                            selectedValue={mealType}
+                            onChange={setMealType}
+                        />
+                        <RadioButtonGroup 
+                            header="Diet"
+                            options={[
+                                'Any',
+                                'Vegetarian',
+                                'Vegan',
+                                'Pescetarian',
+                                'Keto',
+                                'Paleo',
+                                'Carnivore',
+                            ]}
+                            selectedValue={diet}
+                            onChange={setDiet}
+                        />
+                        <RadioButtonGroup
+                            header="Cuisine"
+                            options={[
+                                'Any' ,
+                                'American',
+                                'Chinese',
+                                'Indian',
+                                'Italian',
+                                'Mexican',
+                                'Thai',
+                            ]}
+                            selectedValue={cuisine}
+                            onChange={setCuisine}
+                        />
+
                         <View style={styles.buttonContainer}>
                             <Button title="Apply" onPress={handleApply} />
                             <Button title="Close" onPress={onClose} />

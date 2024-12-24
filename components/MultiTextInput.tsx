@@ -12,8 +12,9 @@ const MultiTextInput = ({ placeholder, values, onChange }: MultiTextInputProps) 
   const [text, setText] = useState('');
 
   const handleAdd = () => {
-    if (text.trim()) {
-      onChange([...values, text.trim()]);
+    const trimmed = text.trim();
+    if (trimmed) {
+      onChange([...values, trimmed]);
       setText('');
     }
   };
@@ -29,6 +30,7 @@ const MultiTextInput = ({ placeholder, values, onChange }: MultiTextInputProps) 
         style={styles.input}
         placeholder={placeholder}
         value={text}
+        placeholderTextColor="#3b4047"
         onChangeText={setText}
         onSubmitEditing={handleAdd}
         returnKeyType="done"
@@ -57,8 +59,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ccc',
     padding: 10,
-    borderRadius: 5,
     marginBottom: 10,
+    borderRadius: 5,
   },
   itemsContainer: {
     flexDirection: 'row',

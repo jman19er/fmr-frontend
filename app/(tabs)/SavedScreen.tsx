@@ -1,30 +1,31 @@
-import React, { useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
-import Swipeable from 'react-native-gesture-handler/Swipeable';
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet } from 'react-native';
 import { useAppContext } from '@/components/AppContext';
-import { Recipe } from '../types';
 import { SavedScreenNavigationProp } from '../navigation';
 import { useNavigation } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import SavedComponent from '@/components/SavedComponent';
+import { Badge, SegmentedButtons } from 'react-native-paper';
+import { ToTryRecipeRenderItem } from '@/components/ToTryRecipeRenderItem';
+import { Recipe, SavedIngredient } from '../types';
+import { ShoppingListRenderItem } from '@/components/ShoppingListRenderItem';
+import { LikedRecipeRenderItem } from '@/components/LikedRecipeRenderItem';
 
 const SavedScreen = () => {
-  const { savedRecipes, deleteRecipe, clearNotification } = useAppContext();
+  const { 
+    savedRecipes,
+    recipesToTry,
+    shoppingList,
+    likedNotification,
+    toTryNotification,
+    groceryNotification,
+    clearNotification,
+    clearLikedNotification,
+    clearToTryNotification,
+    clearGroceryNotification,
+  } = useAppContext();
+  const [selectedTab, setSelectedTab] = useState<'saved' | 'toTry' | 'groceryList'>('saved');
+
   const navigation = useNavigation<SavedScreenNavigationProp>();
-
-  const renderRightActions = (itemId: string) => (
-    <TouchableOpacity style={styles.deleteButton} onPress={() => deleteRecipe(itemId)}>
-      <Icon name="trash-outline" size={30} color="#fff" />
-    </TouchableOpacity>
-  );
-
-  const renderItem = ({ item }: { item: Recipe }) => (
-    <Swipeable renderRightActions={() => renderRightActions(item.title)}>
-      <TouchableOpacity style={styles.recipeItem} onPress={() => navigation.navigate('RecipeInfoScreen', { recipe: item })}>
-        <Text style={styles.recipeTitle}>{item.title}</Text>
-      </TouchableOpacity>
-    </Swipeable>
-
-  );
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -36,12 +37,72 @@ const SavedScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Saved Recipes</Text>
-      <FlatList
-        data={savedRecipes}
-        renderItem={renderItem}
-        keyExtractor={item => item.title}
+      {/* Segmented control at the top */}
+      <SegmentedButtons
+        theme={{ colors: { secondaryContainer: '#FF5A5F' } }}
+        value={selectedTab}
+        onValueChange={(value) => setSelectedTab(value as 'saved' | 'toTry' | 'groceryList')}
+        buttons={[
+          { 
+            value: 'saved',
+            label: 'Liked',
+            onPress: () => clearLikedNotification(),           
+            icon: ({ color, size }) => (
+              <View style={styles.iconAndBadge}>
+                { likedNotification && <Badge size={10}/> }
+              </View>
+            )
+          },
+          { 
+            value: 'toTry', 
+            label: 'To Try', 
+            onPress: () => clearToTryNotification(),
+            icon: ({ color, size }) => (
+              <View style={styles.iconAndBadge}>
+                { toTryNotification && <Badge size={10}/> }
+              </View>
+            )
+
+          },
+          { 
+            value: 'groceryList',
+            label: 'Groceries',
+            onPress: () => clearGroceryNotification(),
+            icon: ({ color, size }) => (
+              <View style={styles.iconAndBadge}>
+                { groceryNotification && <Badge size={10}/>}
+              </View>
+            )
+          },
+        ]}
+        style={styles.segmentedControl}
       />
+
+      {selectedTab === 'saved' && 
+        <SavedComponent
+          saved={savedRecipes}
+          navigation={navigation}
+          renderItem={LikedRecipeRenderItem}
+          keyExtractor={(recipe: Recipe) => recipe.title}
+        />
+      }
+      {selectedTab === 'toTry' &&
+        <SavedComponent
+          saved={recipesToTry}
+          navigation={navigation}
+          renderItem={ToTryRecipeRenderItem}
+          keyExtractor={(recipe: Recipe) => recipe.title}
+        />
+      }
+      {
+        selectedTab === 'groceryList' &&
+        <SavedComponent
+          saved={shoppingList}
+          navigation={navigation}
+          renderItem={ShoppingListRenderItem}
+          keyExtractor={(ingredient: SavedIngredient) => ingredient.name}
+        />
+      }
     </View>
   );
 };
@@ -52,34 +113,22 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: '#fff',
   },
-  header: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 16,
+  segmentedControl: {
+    margin: 16,
   },
-  recipeItem: {
+  iconAndBadge: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
   },
-  recipeTitle: {
-    fontSize: 18,
+  icon: {
+    // Slight margin to keep icon and badge separated
+    marginRight: 2,
   },
-  savedRecipeThumbnail: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-  },
-  deleteButton: {
+  badge: {
+    // Adjust styling to suit your design
     backgroundColor: 'red',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 70,
-    height: '100%',
-  }
+  },
+
 });
 
 export default SavedScreen;

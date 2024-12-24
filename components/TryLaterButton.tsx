@@ -7,20 +7,20 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { HelperText } from "react-native-paper";
 
 
-export const SaveRecipe = ({ recipe }: { recipe: Recipe }) => {
-    const { addRecipe, deleteRecipe, isRecipeSaved } = useAppContext();
+export const TryLaterButton = ({ recipe }: { recipe: Recipe }) => {
+    const { addRecipeToTry, deleteRecipeToTry, isRecipeToTry } = useAppContext();
     const [isSaved, setIsSaved] = useState<boolean>(false);
     const handleToggleRecipe = (recipe: Recipe) => {
         if (isSaved) {
-            deleteRecipe(recipe.title);
+            deleteRecipeToTry(recipe.title);
         } else {
-            addRecipe(recipe);
+            addRecipeToTry(recipe);
         }
         setIsSaved(!isSaved);
     };
 
     useEffect(() => {
-        setIsSaved(isRecipeSaved(recipe.title));
+        setIsSaved(isRecipeToTry(recipe.title));
     });
 
     return (
@@ -28,17 +28,16 @@ export const SaveRecipe = ({ recipe }: { recipe: Recipe }) => {
             <TouchableOpacity
                 onPress={() => handleToggleRecipe(recipe)}
             >
-                <FontAwesome
+                <FontAwesome 
                     size={30}
-                    name={isSaved ? 'heart' : 'heart-o'} // 'heart-o' for outlined, 'heart' for filled
+                    name={isSaved? 'bookmark' : 'bookmark-o'} // 'heart-o' for outlined, 'heart' for filled
                     color="#FF5A5F"
-                />
+                    />
             </TouchableOpacity>
             <HelperText type="info" visible={true}>
-                { isSaved ? "saved to liked" : "add to liked" }
+                { isSaved ? "saved to try later" : "add to try later" }
             </HelperText>
         </View>
-
     )
 };
 
@@ -47,4 +46,4 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     }
-})
+});

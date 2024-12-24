@@ -1,12 +1,13 @@
 import React from 'react';
-import { SafeAreaView, View, Text, StyleSheet, Animated } from 'react-native';
+import { SafeAreaView, View, Text, StyleSheet, Animated as a } from 'react-native';
+import Animated, { SlideInDown } from "react-native-reanimated";
 
 const LoadingScreen = () => {
-  const spinValue = new Animated.Value(0);
+  const spinValue = new a.Value(0);
 
   // Rotate animation
-  Animated.loop(
-    Animated.timing(spinValue, {
+  a.loop(
+    a.timing(spinValue, {
       toValue: 1,
       duration: 2000,
       useNativeDriver: true,
@@ -20,14 +21,18 @@ const LoadingScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Cooking up something delicious...</Text>
-      <View style={styles.animationContainer}>
-        <Animated.Image
-          style={[styles.image, { transform: [{ rotate: spin }] }]}
-          source={require('../assets/images/padded-icon.png')}
-        />
-      </View>
-      <Text style={styles.subtitle}>Hang tight, your perfect recipe is on the way!</Text>
+      <Animated.View
+        entering={SlideInDown}
+      >
+        <Text style={styles.title}>Cooking up something delicious...</Text>
+        <View style={styles.animationContainer}>
+          <a.Image
+            style={[styles.image, { transform: [{ rotate: spin }] }]}
+            source={require('../assets/images/padded-icon.png')}
+          />
+        </View>
+        <Text style={styles.subtitle}>Hang tight, your perfect recipe is on the way!</Text>
+      </Animated.View>
     </SafeAreaView>
   );
 };
@@ -43,7 +48,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 20,
-    color: '#ff7043',
+    color: '#FF5A5F',
   },
   subtitle: {
     fontSize: 16,

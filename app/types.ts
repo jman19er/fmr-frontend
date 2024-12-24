@@ -10,6 +10,13 @@ export interface Ingredient {
   unit: string;
 }
 
+export interface SavedIngredient {
+  name: string;
+  amount: number;
+  unit: string;
+  recipe: Recipe;
+}
+
 export interface Nutrition {
   nutrients: Nutrient[];
   ingredients: Ingredient[];
